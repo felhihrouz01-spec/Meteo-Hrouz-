@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
@@ -8,25 +7,26 @@
     <link rel="manifest" href="manifest.json">
     <meta name="theme-color" content="#2E7D32">
     <style>
-        body { font-family: Tahoma, sans-serif; background-color: #f4f6f5; text-align: center; padding: 20px; margin: 0; }
-        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 400px; margin: 0 auto 15px auto; }
+        body { font-family: Tahoma, sans-serif; background-color: #f4f6f5; text-align: center; padding: 15px; margin: 0; }
+        .card { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 400px; margin: 0 auto 15px auto; }
         h1 { color: #2E7D32; font-size: 22px; margin-bottom: 5px;}
-        h2 { color: #2E7D32; font-size: 18px; margin-top: 0; }
-        .subtitle { font-size: 14px; color: #666; margin-bottom: 20px;}
-        .temp { font-size: 48px; font-weight: bold; color: #333; margin: 10px 0; }
+        h2 { color: #2E7D32; font-size: 18px; margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;}
+        .subtitle { font-size: 14px; color: #666; margin-bottom: 10px;}
+        .temp { font-size: 48px; font-weight: bold; color: #333; margin: 5px 0; }
         .desc { font-size: 18px; color: #666; }
-        .details { margin-top: 20px; display: flex; justify-content: space-around; border-top: 1px solid #eee; padding-top: 15px; }
+        .details { margin-top: 15px; display: flex; justify-content: space-around; border-top: 1px solid #eee; padding-top: 10px; }
         .detail-item { font-size: 14px; color: #444; }
-        #loading { color: #2E7D32; font-weight: bold; }
-        .advice-box { background-color: #e8f5e9; border-right: 5px solid #2E7D32; padding: 15px; border-radius: 5px; text-align: right; margin-top: 15px; }
-        .advice-text { font-size: 15px; color: #333; line-height: 1.6; }
+        .advice-box { background-color: #e8f5e9; border-right: 5px solid #2E7D32; padding: 10px; border-radius: 5px; text-align: right; margin-top: 10px; font-size: 14px; line-height: 1.5; }
+        .prayer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
+        .prayer-item { background: #f8f9fa; padding: 10px; border-radius: 8px; border: 1px solid #e9ecef; font-size: 15px; font-weight: bold; color: #333; }
+        .prayer-item span { display: block; font-size: 13px; color: #666; font-weight: normal; }
     </style>
 </head>
 <body>
     <div class="card">
         <h1>MeteoHrouz 🌤️</h1>
-        <div class="subtitle">الرضاع الشرقية، تونس</div>
-        <div id="loading">جاري تحميل الطقس...</div>
+        <div class="subtitle" id="location-name">جاري تحديد الموقع...</div>
+        <div id="weather-loading">جاري تحميل الطقس...</div>
         <div id="weather" style="display: none;">
             <div class="temp" id="temp">--°C</div>
             <div class="desc" id="desc">--</div>
@@ -39,152 +39,69 @@
 
     <div class="card" id="agri-section" style="display: none;">
         <h2>🌱 الإرشاد الفلاحي</h2>
-        <div class="advice-box">
-            <div class="advice-text" id="advice">جاري تحليل البيانات...</div>
+        <div class="advice-box" id="advice">جاري تحليل البيانات...</div>
+    </div>
+
+    <div class="card" id="prayer-section" style="display: none;">
+        <h2>🕌 مواقيت الصلاة</h2>
+        <div class="prayer-grid">
+            <div class="prayer-item">الفجر <span id="fajr">--:--</span></div>
+            <div class="prayer-item">الظهر <span id="dhuhr">--:--</span></div>
+            <div class="prayer-item">العصر <span id="asr">--:--</span></div>
+            <div class="prayer-item">المغرب <span id="maghrib">--:--</span></div>
+            <div class="prayer-item">العشاء <span id="isha">--:--</span></div>
         </div>
     </div>
 
     <script>
-        const lat = 35.15; 
-        const lon = 9.85;
-        
-        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code`)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('weather').style.display = 'block';
-                document.getElementById('agri-section').style.display = 'block';
-                
-                const current = data.current;
-                const temp = current.temperature_2m;
-                const wind = current.wind_speed_10m;
-                const hum = current.relative_humidity_2m;
-                const code = current.weather_code;
+        let lat = 35.15; 
+        let lon = 9.85;
+        let cityName = "الرضاع الشرقية، تونس";
 
-                document.getElementById('temp').innerText = temp + '°C';
-                document.getElementById('wind').innerText = wind + ' km/h';
-                document.getElementById('humidity').innerText = hum + '%';
-                
-                let desc = "صافي";
-                if (code > 3 && code < 50) desc = "غائم";
-                if (code >= 50) desc = "أمطار";
-                document.getElementById('desc').innerText = desc;
-
-                let advice = "";
-                if (wind > 25) { advice += "⚠️ <b>الرياح قوية:</b> يُنصح بتجنب رش المبيدات أو الأسمدة في هذا الوقت لتجنب تطايرها.<br><br>"; }
-                if (temp > 32) {
-                    advice += "☀️ <b>حرارة مرتفعة:</b> يُفضل القيام بعملية الري في الصباح الباكر أو بعد غروب الشمس لتقليل تبخر المياه.<br><br>";
-                } else if (temp < 10) {
-                    advice += "❄️ <b>برودة:</b> انتبه للمحاصيل الحساسة للصقيع، قد تحتاج إلى تغطية أو حماية.<br><br>";
-                }
-                if (code >= 50) { advice += "🌧️ <b>أمطار:</b> تأكد من سلامة قنوات تصريف المياه في الحقول لتجنب تراكم المياه الجوفية.<br><br>"; }
-                if (advice === "") { advice = "✅ الظروف الجوية ممتازة ومناسبة للقيام بالأعمال الزراعية اليوم (حراثة، ري، رش، إلخ)."; }
-                
-                document.getElementById('advice').innerHTML = advice;
-            })
-            .catch(error => {
-                document.getElementById('loading').innerText = "حدث خطأ في جلب البيانات";
-                document.getElementById('agri-section').style.display = 'none';
-            });
-
-        // تفعيل التطبيق (Service Worker) باش يخدم أوفلاين ويولي قابل للتثبيت
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
+        function getWeather() {
+            document.getElementById('location-name').innerText = cityName;
+            fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('weather-loading').style.display = 'none';
+                    document.getElementById('weather').style.display = 'block';
+                    document.getElementById('agri-section').style.display = 'block';
+                    const current = data.current;
+                    document.getElementById('temp').innerText = current.temperature_2m + '°C';
+                    document.getElementById('wind').innerText = current.wind_speed_10m + ' km/h';
+                    document.getElementById('humidity').innerText = current.relative_humidity_2m + '%';
+                    let desc = "صافي"; if (current.weather_code > 3 && current.weather_code < 50) desc = "غائم"; if (current.weather_code >= 50) desc = "أمطار";
+                    document.getElementById('desc').innerText = desc;
+                    let advice = "";
+                    if (current.wind_speed_10m > 25) { advice += "⚠️ <b>الرياح قوية:</b> تجنب رش المبيدات.<br>"; }
+                    if (current.temperature_2m > 32) { advice += "☀️ <b>حرارة مرتفعة:</b> يفضل الري في الصباح الباكر.<br>"; }
+                    else if (current.temperature_2m < 10) { advice += "❄️ <b>برودة:</b> انتبه للمحاصيل الحساسة.<br>"; }
+                    if (current.weather_code >= 50) { advice += "🌧️ <b>أمطار:</b> تأكد من تصريف المياه.<br>"; }
+                    if (advice === "") { advice = "✅ الظروف الجوية ممتازة للأعمال الزراعية اليوم."; }
+                    document.getElementById('advice').innerHTML = advice;
+                });
         }
-    </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="ar" dir="rtl">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MeteoHrouz - الطقس والإرشاد الفلاحي</title>
-    <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2E7D32">
-    <style>
-        body { font-family: Tahoma, sans-serif; background-color: #f4f6f5; text-align: center; padding: 20px; margin: 0; }
-        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 400px; margin: 0 auto 15px auto; }
-        h1 { color: #2E7D32; font-size: 22px; margin-bottom: 5px;}
-        h2 { color: #2E7D32; font-size: 18px; margin-top: 0; }
-        .subtitle { font-size: 14px; color: #666; margin-bottom: 20px;}
-        .temp { font-size: 48px; font-weight: bold; color: #333; margin: 10px 0; }
-        .desc { font-size: 18px; color: #666; }
-        .details { margin-top: 20px; display: flex; justify-content: space-around; border-top: 1px solid #eee; padding-top: 15px; }
-        .detail-item { font-size: 14px; color: #444; }
-        #loading { color: #2E7D32; font-weight: bold; }
-        .advice-box { background-color: #e8f5e9; border-right: 5px solid #2E7D32; padding: 15px; border-radius: 5px; text-align: right; margin-top: 15px; }
-        .advice-text { font-size: 15px; color: #333; line-height: 1.6; }
-    </style>
-</head>
-<body>
-    <div class="card">
-        <h1>MeteoHrouz 🌤️</h1>
-        <div class="subtitle">الرضاع الشرقية، تونس</div>
-        <div id="loading">جاري تحميل الطقس...</div>
-        <div id="weather" style="display: none;">
-            <div class="temp" id="temp">--°C</div>
-            <div class="desc" id="desc">--</div>
-            <div class="details">
-                <div class="detail-item">💨 الرياح<br><b id="wind">-- km/h</b></div>
-                <div class="detail-item">💧 الرطوبة<br><b id="humidity">--%</b></div>
-            </div>
-        </div>
-    </div>
 
-    <div class="card" id="agri-section" style="display: none;">
-        <h2>🌱 الإرشاد الفلاحي</h2>
-        <div class="advice-box">
-            <div class="advice-text" id="advice">جاري تحليل البيانات...</div>
-        </div>
-    </div>
-
-    <script>
-        const lat = 35.15; 
-        const lon = 9.85;
-        
-        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code`)
-            .then(response => response.json())
-            .then(data => {
-                document.getElementById('loading').style.display = 'none';
-                document.getElementById('weather').style.display = 'block';
-                document.getElementById('agri-section').style.display = 'block';
-                
-                const current = data.current;
-                const temp = current.temperature_2m;
-                const wind = current.wind_speed_10m;
-                const hum = current.relative_humidity_2m;
-                const code = current.weather_code;
-
-                document.getElementById('temp').innerText = temp + '°C';
-                document.getElementById('wind').innerText = wind + ' km/h';
-                document.getElementById('humidity').innerText = hum + '%';
-                
-                let desc = "صافي";
-                if (code > 3 && code < 50) desc = "غائم";
-                if (code >= 50) desc = "أمطار";
-                document.getElementById('desc').innerText = desc;
-
-                let advice = "";
-                if (wind > 25) { advice += "⚠️ <b>الرياح قوية:</b> يُنصح بتجنب رش المبيدات أو الأسمدة في هذا الوقت لتجنب تطايرها.<br><br>"; }
-                if (temp > 32) {
-                    advice += "☀️ <b>حرارة مرتفعة:</b> يُفضل القيام بعملية الري في الصباح الباكر أو بعد غروب الشمس لتقليل تبخر المياه.<br><br>";
-                } else if (temp < 10) {
-                    advice += "❄️ <b>برودة:</b> انتبه للمحاصيل الحساسة للصقيع، قد تحتاج إلى تغطية أو حماية.<br><br>";
-                }
-                if (code >= 50) { advice += "🌧️ <b>أمطار:</b> تأكد من سلامة قنوات تصريف المياه في الحقول لتجنب تراكم المياه الجوفية.<br><br>"; }
-                if (advice === "") { advice = "✅ الظروف الجوية ممتازة ومناسبة للقيام بالأعمال الزراعية اليوم (حراثة، ري، رش، إلخ)."; }
-                
-                document.getElementById('advice').innerHTML = advice;
-            })
-            .catch(error => {
-                document.getElementById('loading').innerText = "حدث خطأ في جلب البيانات";
-                document.getElementById('agri-section').style.display = 'none';
-            });
-
-        // تفعيل التطبيق (Service Worker) باش يخدم أوفلاين ويولي قابل للتثبيت
-        if ('serviceWorker' in navigator) {
-            navigator.serviceWorker.register('sw.js');
+        function getPrayerTimes() {
+            fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=2`)
+                .then(response => response.json())
+                .then(data => {
+                    document.getElementById('prayer-section').style.display = 'block';
+                    const t = data.data.timings;
+                    document.getElementById('fajr').innerText = t.Fajr;
+                    document.getElementById('dhuhr').innerText = t.Dhuhr;
+                    document.getElementById('asr').innerText = t.Asr;
+                    document.getElementById('maghrib').innerText = t.Maghrib;
+                    document.getElementById('isha').innerText = t.Isha;
+                });
         }
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (position) => { lat = position.coords.latitude; lon = position.coords.longitude; cityName = "موقعك الحالي (GPS)"; getWeather(); getPrayerTimes(); },
+                (error) => { getWeather(); getPrayerTimes(); }
+            );
+        } else { getWeather(); getPrayerTimes(); }
     </script>
 </body>
 </html>
