@@ -5,6 +5,8 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MeteoHrouz - الطقس والإرشاد الفلاحي</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2E7D32">
     <style>
         body { font-family: Tahoma, sans-serif; background-color: #f4f6f5; text-align: center; padding: 20px; margin: 0; }
         .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 400px; margin: 0 auto 15px auto; }
@@ -21,7 +23,6 @@
     </style>
 </head>
 <body>
-    <!-- قسم الطقس -->
     <div class="card">
         <h1>MeteoHrouz 🌤️</h1>
         <div class="subtitle">الرضاع الشرقية، تونس</div>
@@ -36,7 +37,6 @@
         </div>
     </div>
 
-    <!-- قسم الإرشاد الفلاحي -->
     <div class="card" id="agri-section" style="display: none;">
         <h2>🌱 الإرشاد الفلاحي</h2>
         <div class="advice-box">
@@ -61,44 +61,130 @@
                 const hum = current.relative_humidity_2m;
                 const code = current.weather_code;
 
-                // عرض بيانات الطقس
                 document.getElementById('temp').innerText = temp + '°C';
                 document.getElementById('wind').innerText = wind + ' km/h';
                 document.getElementById('humidity').innerText = hum + '%';
                 
-                // وصف الطقس
                 let desc = "صافي";
                 if (code > 3 && code < 50) desc = "غائم";
                 if (code >= 50) desc = "أمطار";
                 document.getElementById('desc').innerText = desc;
 
-                // --- منطق الإرشاد الفلاحي ---
                 let advice = "";
-                
-                if (wind > 25) {
-                    advice += "⚠️ <b>الرياح قوية:</b> يُنصح بتجنب رش المبيدات أو الأسمدة في هذا الوقت لتجنب تطايرها.<br><br>";
-                }
-                
+                if (wind > 25) { advice += "⚠️ <b>الرياح قوية:</b> يُنصح بتجنب رش المبيدات أو الأسمدة في هذا الوقت لتجنب تطايرها.<br><br>"; }
                 if (temp > 32) {
                     advice += "☀️ <b>حرارة مرتفعة:</b> يُفضل القيام بعملية الري في الصباح الباكر أو بعد غروب الشمس لتقليل تبخر المياه.<br><br>";
                 } else if (temp < 10) {
                     advice += "❄️ <b>برودة:</b> انتبه للمحاصيل الحساسة للصقيع، قد تحتاج إلى تغطية أو حماية.<br><br>";
                 }
-
-                if (code >= 50) {
-                    advice += "🌧️ <b>أمطار:</b> تأكد من سلامة قنوات تصريف المياه في الحقول لتجنب تراكم المياه الجوفية.<br><br>";
-                }
-
-                if (advice === "") {
-                    advice = "✅ الظروف الجوية ممتازة ومناسبة للقيام بالأعمال الزراعية اليوم (حراثة، ري، رش، إلخ).";
-                }
-
+                if (code >= 50) { advice += "🌧️ <b>أمطار:</b> تأكد من سلامة قنوات تصريف المياه في الحقول لتجنب تراكم المياه الجوفية.<br><br>"; }
+                if (advice === "") { advice = "✅ الظروف الجوية ممتازة ومناسبة للقيام بالأعمال الزراعية اليوم (حراثة، ري، رش، إلخ)."; }
+                
                 document.getElementById('advice').innerHTML = advice;
             })
             .catch(error => {
                 document.getElementById('loading').innerText = "حدث خطأ في جلب البيانات";
                 document.getElementById('agri-section').style.display = 'none';
             });
+
+        // تفعيل التطبيق (Service Worker) باش يخدم أوفلاين ويولي قابل للتثبيت
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
+    </script>
+</body>
+</html><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeteoHrouz - الطقس والإرشاد الفلاحي</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#2E7D32">
+    <style>
+        body { font-family: Tahoma, sans-serif; background-color: #f4f6f5; text-align: center; padding: 20px; margin: 0; }
+        .card { background: white; padding: 20px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 400px; margin: 0 auto 15px auto; }
+        h1 { color: #2E7D32; font-size: 22px; margin-bottom: 5px;}
+        h2 { color: #2E7D32; font-size: 18px; margin-top: 0; }
+        .subtitle { font-size: 14px; color: #666; margin-bottom: 20px;}
+        .temp { font-size: 48px; font-weight: bold; color: #333; margin: 10px 0; }
+        .desc { font-size: 18px; color: #666; }
+        .details { margin-top: 20px; display: flex; justify-content: space-around; border-top: 1px solid #eee; padding-top: 15px; }
+        .detail-item { font-size: 14px; color: #444; }
+        #loading { color: #2E7D32; font-weight: bold; }
+        .advice-box { background-color: #e8f5e9; border-right: 5px solid #2E7D32; padding: 15px; border-radius: 5px; text-align: right; margin-top: 15px; }
+        .advice-text { font-size: 15px; color: #333; line-height: 1.6; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>MeteoHrouz 🌤️</h1>
+        <div class="subtitle">الرضاع الشرقية، تونس</div>
+        <div id="loading">جاري تحميل الطقس...</div>
+        <div id="weather" style="display: none;">
+            <div class="temp" id="temp">--°C</div>
+            <div class="desc" id="desc">--</div>
+            <div class="details">
+                <div class="detail-item">💨 الرياح<br><b id="wind">-- km/h</b></div>
+                <div class="detail-item">💧 الرطوبة<br><b id="humidity">--%</b></div>
+            </div>
+        </div>
+    </div>
+
+    <div class="card" id="agri-section" style="display: none;">
+        <h2>🌱 الإرشاد الفلاحي</h2>
+        <div class="advice-box">
+            <div class="advice-text" id="advice">جاري تحليل البيانات...</div>
+        </div>
+    </div>
+
+    <script>
+        const lat = 35.15; 
+        const lon = 9.85;
+        
+        fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code`)
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('loading').style.display = 'none';
+                document.getElementById('weather').style.display = 'block';
+                document.getElementById('agri-section').style.display = 'block';
+                
+                const current = data.current;
+                const temp = current.temperature_2m;
+                const wind = current.wind_speed_10m;
+                const hum = current.relative_humidity_2m;
+                const code = current.weather_code;
+
+                document.getElementById('temp').innerText = temp + '°C';
+                document.getElementById('wind').innerText = wind + ' km/h';
+                document.getElementById('humidity').innerText = hum + '%';
+                
+                let desc = "صافي";
+                if (code > 3 && code < 50) desc = "غائم";
+                if (code >= 50) desc = "أمطار";
+                document.getElementById('desc').innerText = desc;
+
+                let advice = "";
+                if (wind > 25) { advice += "⚠️ <b>الرياح قوية:</b> يُنصح بتجنب رش المبيدات أو الأسمدة في هذا الوقت لتجنب تطايرها.<br><br>"; }
+                if (temp > 32) {
+                    advice += "☀️ <b>حرارة مرتفعة:</b> يُفضل القيام بعملية الري في الصباح الباكر أو بعد غروب الشمس لتقليل تبخر المياه.<br><br>";
+                } else if (temp < 10) {
+                    advice += "❄️ <b>برودة:</b> انتبه للمحاصيل الحساسة للصقيع، قد تحتاج إلى تغطية أو حماية.<br><br>";
+                }
+                if (code >= 50) { advice += "🌧️ <b>أمطار:</b> تأكد من سلامة قنوات تصريف المياه في الحقول لتجنب تراكم المياه الجوفية.<br><br>"; }
+                if (advice === "") { advice = "✅ الظروف الجوية ممتازة ومناسبة للقيام بالأعمال الزراعية اليوم (حراثة، ري، رش، إلخ)."; }
+                
+                document.getElementById('advice').innerHTML = advice;
+            })
+            .catch(error => {
+                document.getElementById('loading').innerText = "حدث خطأ في جلب البيانات";
+                document.getElementById('agri-section').style.display = 'none';
+            });
+
+        // تفعيل التطبيق (Service Worker) باش يخدم أوفلاين ويولي قابل للتثبيت
+        if ('serviceWorker' in navigator) {
+            navigator.serviceWorker.register('sw.js');
+        }
     </script>
 </body>
 </html>
