@@ -20,17 +20,15 @@
             color: var(--text-light);
             margin: 0; 
             padding: 0;
-            padding-bottom: 70px; /* مساحة للشريط السفلي */
+            padding-bottom: 70px;
             height: 100vh;
             overflow-y: auto;
         }
         
-        /* التبويبات (Tabs) */
         .tab-content { display: none; padding: 15px; animation: fadeIn 0.4s; }
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* التصميم العام للكروت */
         .card { 
             background: var(--card-bg); 
             padding: 15px; 
@@ -44,12 +42,10 @@
         .temp { font-size: 55px; font-weight: bold; margin: 5px 0; }
         .desc { font-size: 18px; color: #a9b4c2; }
         
-        /* تفاصيل الرياح والرطوبة */
         .details { display: flex; justify-content: space-around; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
         .detail-item { font-size: 14px; }
         .detail-item b { display: block; font-size: 16px; color: #fff; margin-top: 5px; }
 
-        /* توقعات 7 أيام */
         .forecast-container { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; }
         .forecast-container::-webkit-scrollbar { display: none; }
         .forecast-day { min-width: 80px; background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
@@ -58,37 +54,27 @@
         .forecast-day .temps { font-size: 14px; font-weight: bold; }
         .forecast-day .rain { font-size: 11px; color: #4fc3f7; }
 
-        /* مواقيت الصلاة */
         .prayer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
         .prayer-item { background: rgba(255, 255, 255, 0.05); padding: 8px; border-radius: 8px; font-size: 13px; }
         .prayer-item b { display: block; font-size: 15px; margin-top: 3px; color: #fff; }
 
-        /* الإرشاد الفلاحي */
         .search-box { display: flex; gap: 5px; margin-top: 10px; }
         .search-box input { flex: 1; padding: 12px; border-radius: 8px; border: none; background: rgba(255,255,255,0.2); color: white; font-family: Tahoma; }
         .search-box input::placeholder { color: #ccc; }
         .search-box button { padding: 0 20px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; }
         .advice-box { background: rgba(76, 175, 80, 0.2); border-right: 4px solid var(--primary); padding: 10px; border-radius: 5px; text-align: right; margin-top: 10px; font-size: 14px; line-height: 1.6; }
+        
+        /* تنسيق قائمة الاقتراحات */
+        .hint-text { font-size: 11px; color: #a9b4c2; text-align: right; margin-top: 5px; }
 
-        /* الرادار */
         .radar-container { width: 100%; height: 60vh; border-radius: 15px; overflow: hidden; }
         iframe { width: 100%; height: 100%; border: none; }
 
-        /* الشريط السفلي (Bottom Nav) */
-        .bottom-nav { 
-            position: fixed; bottom: 0; left: 0; width: 100%; 
-            background: #1b263b; display: flex; justify-content: space-around; 
-            padding: 10px 0; border-top: 1px solid rgba(255,255,255,0.1); 
-            z-index: 1000;
-        }
-        .nav-item { 
-            display: flex; flex-direction: column; align-items: center; 
-            color: #a9b4c2; font-size: 12px; cursor: pointer; transition: 0.3s;
-        }
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #1b263b; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #a9b4c2; font-size: 12px; cursor: pointer; transition: 0.3s; }
         .nav-item.active { color: var(--primary); }
         .nav-item i { font-size: 20px; margin-bottom: 4px; }
     </style>
-    <!-- استدعاء أيقونات FontAwesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
@@ -108,9 +94,7 @@
 
         <div class="card">
             <h2>📅 توقعات 7 أيام</h2>
-            <div class="forecast-container" id="forecast-container">
-                <!-- سيتم تعبئته بالجافاسكريبت -->
-            </div>
+            <div class="forecast-container" id="forecast-container"></div>
         </div>
 
         <div class="card">
@@ -130,7 +114,6 @@
     <div id="radar" class="tab-content">
         <h2 style="text-align:center;">🌧️ رادار الأمطار</h2>
         <div class="radar-container">
-            <!-- خريطة حية من Windy -->
             <iframe src="https://embed.windy.com/embed2.html?lat=35.15&lon=9.85&zoom=7&level=surface&overlay=rain&product=ecmwf&menu=&message=&marker=&calendar=&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1"></iframe>
         </div>
     </div>
@@ -144,12 +127,15 @@
         
         <div class="card">
             <h2>🍃 دليل أمراض المحاصيل</h2>
-            <div class="desc" style="margin-bottom:15px;">اكتب اسم النبتة لمعرفة العلاج</div>
+            <div class="desc" style="margin-bottom:10px;">اكتب اسم النبتة لمعرفة العلاج</div>
             <div class="search-box">
                 <input type="text" id="cropInput" placeholder="مثال: زيتون، طماطم...">
                 <button onclick="getTreatment()">بحث</button>
             </div>
-            <div class="advice-box" id="treatmentResult" style="display:none;"></div>
+            <!-- قائمة اقتراحات باش تعاون الفلاح -->
+            <div class="hint-text">متوفر حالياً: زيتون، طماطم، رمان، خوخ، فلفل، بطاطا، بصل، تفاح، عنب، ليمون، باذنجان، جزر، كوسة، قمح، شعير.</div>
+            
+            <div class="advice-box" id="treatmentResult" style="display:none; margin-top:10px;"></div>
         </div>
     </div>
 
@@ -161,29 +147,20 @@
                 تطبيق <b>MeteoHrouz</b> هو رفيقك اليومي للطقس والإرشاد الفلاحي في الرضاع الشرقية.<br><br>
                 - البيانات مستمدة من Open-Meteo و Aladhan API.<br>
                 - تم تطويره بحب لخدمة الفلاحين.<br><br>
-                <i>الإصدار 2.0</i>
+                <i>الإصدار 2.1</i>
             </p>
         </div>
     </div>
 
     <!-- الشريط السفلي -->
     <div class="bottom-nav">
-        <div class="nav-item active" onclick="switchTab('home', this)">
-            <i class="fas fa-home"></i><span>الرئيسية</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('radar', this)">
-            <i class="fas fa-satellite-dish"></i><span>الرادار</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('agri', this)">
-            <i class="fas fa-leaf"></i><span>الإرشاد</span>
-        </div>
-        <div class="nav-item" onclick="switchTab('settings', this)">
-            <i class="fas fa-cog"></i><span>الإعدادات</span>
-        </div>
+        <div class="nav-item active" onclick="switchTab('home', this)"><i class="fas fa-home"></i><span>الرئيسية</span></div>
+        <div class="nav-item" onclick="switchTab('radar', this)"><i class="fas fa-satellite-dish"></i><span>الرادار</span></div>
+        <div class="nav-item" onclick="switchTab('agri', this)"><i class="fas fa-leaf"></i><span>الإرشاد</span></div>
+        <div class="nav-item" onclick="switchTab('settings', this)"><i class="fas fa-cog"></i><span>الإعدادات</span></div>
     </div>
 
     <script>
-        // --- 1. التنقل بين التبويبات ---
         function switchTab(tabId, element) {
             document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
             document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
@@ -191,12 +168,10 @@
             element.classList.add('active');
         }
 
-        // --- 2. إعدادات الموقع ---
         let lat = 35.15; 
         let lon = 9.85;
         let cityName = "الرضاع الشرقية، تونس";
 
-        // دالة تحويل كود الطقس إلى إيموجي ووصف
         function getWeatherInfo(code) {
             if (code === 0) return { text: "صافي", icon: "☀️" };
             if (code >= 1 && code <= 3) return { text: "غائم جزئياً", icon: "⛅" };
@@ -208,13 +183,11 @@
             return { text: "غير معروف", icon: "🌍" };
         }
 
-        // --- 3. جلب بيانات الطقس (الحالي + 7 أيام) ---
         function getWeather() {
             document.getElementById('location-name').innerText = cityName;
             const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
             
             fetch(url).then(res => res.json()).then(data => {
-                // الطقس الحالي
                 const current = data.current;
                 const info = getWeatherInfo(current.weather_code);
                 document.getElementById('temp').innerText = Math.round(current.temperature_2m) + '°';
@@ -222,7 +195,6 @@
                 document.getElementById('wind').innerText = current.wind_speed_10m + ' km/h';
                 document.getElementById('humidity').innerText = current.relative_humidity_2m + '%';
 
-                // الإرشاد الفلاحي (حسب الطقس)
                 let advice = "";
                 if (current.wind_speed_10m > 25) advice += "⚠️ <b>الرياح قوية:</b> تجنب رش المبيدات.<br>";
                 if (current.temperature_2m > 32) advice += "☀️ <b>حرارة مرتفعة:</b> يفضل الري في الصباح الباكر.<br>";
@@ -231,18 +203,15 @@
                 if (advice === "") advice = "✅ الظروف الجوية ممتازة للأعمال الزراعية اليوم.";
                 document.getElementById('weather-advice').innerHTML = advice;
 
-                // توقعات 7 أيام
                 const daily = data.daily;
                 const forecastContainer = document.getElementById('forecast-container');
-                forecastContainer.innerHTML = ''; // تفريغ
-                
+                forecastContainer.innerHTML = '';
                 const daysAr = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
                 
                 for (let i = 0; i < 7; i++) {
                     let date = new Date(daily.time[i]);
                     let dayName = daysAr[date.getDay()];
                     let dInfo = getWeatherInfo(daily.weather_code[i]);
-                    
                     let div = document.createElement('div');
                     div.className = 'forecast-day';
                     div.innerHTML = `
@@ -256,7 +225,6 @@
             });
         }
 
-        // --- 4. جلب مواقيت الصلاة ---
         function getPrayerTimes() {
             fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=2`)
                 .then(res => res.json()).then(data => {
@@ -270,14 +238,23 @@
                 });
         }
 
-        // --- 5. دليل أمراض المحاصيل (فلاح ذكي) ---
+        // قاعدة البيانات الموسعة
         const cropsDB = {
             "زيتون": "<b>الأمراض:</b> عين الطاووس، ذبابة الزيتون.<br><b>العلاج:</b> رش مركبات النحاس، واستخدام مصائد صفراء.",
             "طماطم": "<b>الأمراض:</b> البياض الدقيقي، اللفحة.<br><b>العلاج:</b> مبيدات فطرية (نحاس/كبريت)، وتجنب الري العلوي.",
             "رمان": "<b>الأمراض:</b> لفحة الأزهار، دودة الثمار.<br><b>العلاج:</b> رش مبيدات فطرية، ومصائد فرمونية.",
             "خوخ": "<b>الأمراض:</b> تجعد الأوراق، العفن البني.<br><b>العلاج:</b> رش نحاسي في الخريف، ومبيدات فطرية في الربيع.",
             "فلفل": "<b>الأمراض:</b> الذبول، البياض.<br><b>العلاج:</b> تحسين التصريف، ورش مبيدات فطرية.",
-            "قمح": "<b>الأمراض:</b> الصدأ الأصفر.<br><b>العلاج:</b> استخدام أصناف مقاومة، ورش مبيدات فطرية三唑类."
+            "قمح": "<b>الأمراض:</b> الصدأ الأصفر.<br><b>العلاج:</b> استخدام أصناف مقاومة، ورش مبيدات فطرية.",
+            "بطاطا": "<b>الأمراض:</b> اللفحة المتأخرة.<br><b>العلاج:</b> تقليل الرطوبة، ورش مبيدات نحاسية وقائية.",
+            "بصل": "<b>الأمراض:</b> البياض الزغبي.<br><b>العلاج:</b> تجنب الري الزائد، ورش مبيدات فطرية.",
+            "تفاح": "<b>الأمراض:</b> الجرب، العفن.<br><b>العلاج:</b> رش نحاسي في الشتاء، ومبيدات فطرية في الربيع.",
+            "عنب": "<b>الأمراض:</b> البياض الدقيقي والزغبي.<br><b>العلاج:</b> رش الكبريت، وتقليم جيد للتهوية.",
+            "ليمون": "<b>الأمراض:</b> التصمغ، الأصداء.<br><b>العلاج:</b> معالجة الصرف، ورش مركبات نحاسية.",
+            "باذنجان": "<b>الأمراض:</b> الذبول الفيروسي.<br><b>العلاج:</b> مكافحة الحشرات الناقلة (الذبابة البيضاء).",
+            "جزر": "<b>الأمراض:</b> تعفن الجذور.<br><b>العلاج:</b> تحسين تهوية التربة، وتجنب الإفراط في الري.",
+            "كوسة": "<b>الأمراض:</b> البياض الدقيقي.<br><b>العلاج:</b> رش الكبريت الميكروني.",
+            "شعير": "<b>الأمراض:</b> التفحم.<br><b>العلاج:</b> معالجة البذور قبل الزراعة."
         };
 
         function getTreatment() {
@@ -295,22 +272,12 @@
             }
         }
 
-        // --- 6. تشغيل التطبيق وجلب الموقع ---
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
-                (pos) => { 
-                    lat = pos.coords.latitude; 
-                    lon = pos.coords.longitude; 
-                    cityName = "موقعك الحالي (GPS)"; 
-                    getWeather(); getPrayerTimes(); 
-                },
-                (err) => { 
-                    getWeather(); getPrayerTimes(); // إذا رفض الموقع، نستخدموا الإحداثيات الافتراضية
-                }
+                (pos) => { lat = pos.coords.latitude; lon = pos.coords.longitude; cityName = "موقعك الحالي (GPS)"; getWeather(); getPrayerTimes(); },
+                (err) => { getWeather(); getPrayerTimes(); }
             );
-        } else { 
-            getWeather(); getPrayerTimes(); 
-        }
+        } else { getWeather(); getPrayerTimes(); }
     </script>
 </body>
-                    </html>
+    </html>
