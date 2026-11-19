@@ -12,7 +12,6 @@
             --card-bg: rgba(255, 255, 255, 0.1);
             --primary: #4caf50;
             --text-light: #e0e1dd;
-            --text-dark: #1b263b;
         }
         body { 
             font-family: Tahoma, sans-serif; 
@@ -20,7 +19,7 @@
             color: var(--text-light);
             margin: 0; 
             padding: 0;
-            padding-bottom: 70px;
+            padding-bottom: 150px; 
             height: 100vh;
             overflow-y: auto;
         }
@@ -48,7 +47,11 @@
 
         .forecast-container { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; }
         .forecast-container::-webkit-scrollbar { display: none; }
-        .forecast-day { min-width: 80px; background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .forecast-day { 
+            min-width: 85px; background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 10px; 
+            text-align: center; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.2s;
+        }
+        .forecast-day:active { background: rgba(255, 255, 255, 0.2); }
         .forecast-day .day-name { font-size: 13px; color: #a9b4c2; margin-bottom: 5px; }
         .forecast-day .icon { font-size: 24px; margin: 5px 0; }
         .forecast-day .temps { font-size: 14px; font-weight: bold; }
@@ -62,9 +65,12 @@
         .search-box input { flex: 1; padding: 12px; border-radius: 8px; border: none; background: rgba(255,255,255,0.2); color: white; font-family: Tahoma; }
         .search-box input::placeholder { color: #ccc; }
         .search-box button { padding: 0 20px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; }
-        .advice-box { background: rgba(76, 175, 80, 0.2); border-right: 4px solid var(--primary); padding: 10px; border-radius: 5px; text-align: right; margin-top: 10px; font-size: 14px; line-height: 1.6; }
         
-        /* تنسيق قائمة الاقتراحات */
+        /* تنسيق النصائح الطبية للنبات */
+        .advice-box { background: rgba(76, 175, 80, 0.2); border-right: 4px solid var(--primary); padding: 12px; border-radius: 5px; text-align: right; margin-top: 10px; font-size: 14px; line-height: 1.8; }
+        .advice-box b { color: #81c784; }
+        .advice-box .warning { color: #ffb74d; font-size: 12px; display: block; margin-top: 5px; }
+        
         .hint-text { font-size: 11px; color: #a9b4c2; text-align: right; margin-top: 5px; }
 
         .radar-container { width: 100%; height: 60vh; border-radius: 15px; overflow: hidden; }
@@ -79,7 +85,6 @@
 </head>
 <body>
 
-    <!-- 1. الواجهة الرئيسية -->
     <div id="home" class="tab-content active">
         <div class="card">
             <h1>MeteoHrouz 🌤️</h1>
@@ -110,15 +115,13 @@
         </div>
     </div>
 
-    <!-- 2. الرادار -->
     <div id="radar" class="tab-content">
         <h2 style="text-align:center;">🌧️ رادار الأمطار</h2>
         <div class="radar-container">
-            <iframe src="https://embed.windy.com/embed2.html?lat=35.15&lon=9.85&zoom=7&level=surface&overlay=rain&product=ecmwf&menu=&message=&marker=&calendar=&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1"></iframe>
+            <iframe src="https://embed.windy.com/embed2.html?lat=35.15&lon=9.85&zoom=7&level=surface&overlay=rain&product=ecmwf&menu=true&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=default&metricTemp=default&radarRange=-1"></iframe>
         </div>
     </div>
 
-    <!-- 3. الإرشاد الفلاحي الذكي -->
     <div id="agri" class="tab-content">
         <div class="card">
             <h2>🌱 الإرشاد الفلاحي (الطقس)</h2>
@@ -126,33 +129,28 @@
         </div>
         
         <div class="card">
-            <h2>🍃 دليل أمراض المحاصيل</h2>
-            <div class="desc" style="margin-bottom:10px;">اكتب اسم النبتة لمعرفة العلاج</div>
+            <h2>🍃 طبيب النباتات الذكي</h2>
+            <div class="desc" style="margin-bottom:10px;">اكتب اسم النبتة لمعرفة المرض، الدواء، ووقت الرش</div>
             <div class="search-box">
-                <input type="text" id="cropInput" placeholder="مثال: زيتون، طماطم...">
+                <input type="text" id="cropInput" placeholder="مثال: زيتون، طماطم، عنب...">
                 <button onclick="getTreatment()">بحث</button>
             </div>
-            <!-- قائمة اقتراحات باش تعاون الفلاح -->
-            <div class="hint-text">متوفر حالياً: زيتون، طماطم، رمان، خوخ، فلفل، بطاطا، بصل، تفاح، عنب، ليمون، باذنجان، جزر، كوسة، قمح، شعير.</div>
-            
-            <div class="advice-box" id="treatmentResult" style="display:none; margin-top:10px;"></div>
+            <div class="hint-text">أمثلة: زيتون، طماطم، رمان، خوخ، عنب، تفاح، ليمون...</div>
+            <div class="advice-box" id="treatmentResult" style="display:none;"></div>
         </div>
     </div>
 
-    <!-- 4. الإعدادات -->
     <div id="settings" class="tab-content">
         <div class="card">
             <h2>⚙️ حول التطبيق</h2>
             <p style="line-height:1.6; font-size:14px; color:#a9b4c2;">
-                تطبيق <b>MeteoHrouz</b> هو رفيقك اليومي للطقس والإرشاد الفلاحي في الرضاع الشرقية.<br><br>
+                تطبيق <b>MeteoHrouz</b> هو رفيقك اليومي للطقس والإرشاد الفلاحي.<br><br>
+                - الإصدار 2.3 (طبيب النباتات).<br>
                 - البيانات مستمدة من Open-Meteo و Aladhan API.<br>
-                - تم تطويره بحب لخدمة الفلاحين.<br><br>
-                <i>الإصدار 2.1</i>
             </p>
         </div>
     </div>
 
-    <!-- الشريط السفلي -->
     <div class="bottom-nav">
         <div class="nav-item active" onclick="switchTab('home', this)"><i class="fas fa-home"></i><span>الرئيسية</span></div>
         <div class="nav-item" onclick="switchTab('radar', this)"><i class="fas fa-satellite-dish"></i><span>الرادار</span></div>
@@ -220,6 +218,9 @@
                         <div class="temps">${Math.round(daily.temperature_2m_max[i])}° / ${Math.round(daily.temperature_2m_min[i])}°</div>
                         <div class="rain">💧 ${daily.precipitation_probability_max[i]}%</div>
                     `;
+                    div.onclick = () => {
+                        alert(`تفاصيل يوم ${dayName}:\n\nالطقس: ${dInfo.text} ${dInfo.icon}\nالحرارة العظمى: ${Math.round(daily.temperature_2m_max[i])}°C\nالحرارة الصغرى: ${Math.round(daily.temperature_2m_min[i])}°C\nاحتمال الأمطار: ${daily.precipitation_probability_max[i]}%`);
+                    };
                     forecastContainer.appendChild(div);
                 }
             });
@@ -238,23 +239,65 @@
                 });
         }
 
-        // قاعدة البيانات الموسعة
+        // 🌿 قاعدة البيانات الطبية الجديدة (المرض + المبيد + وقت الرش + تحذير)
         const cropsDB = {
-            "زيتون": "<b>الأمراض:</b> عين الطاووس، ذبابة الزيتون.<br><b>العلاج:</b> رش مركبات النحاس، واستخدام مصائد صفراء.",
-            "طماطم": "<b>الأمراض:</b> البياض الدقيقي، اللفحة.<br><b>العلاج:</b> مبيدات فطرية (نحاس/كبريت)، وتجنب الري العلوي.",
-            "رمان": "<b>الأمراض:</b> لفحة الأزهار، دودة الثمار.<br><b>العلاج:</b> رش مبيدات فطرية، ومصائد فرمونية.",
-            "خوخ": "<b>الأمراض:</b> تجعد الأوراق، العفن البني.<br><b>العلاج:</b> رش نحاسي في الخريف، ومبيدات فطرية في الربيع.",
-            "فلفل": "<b>الأمراض:</b> الذبول، البياض.<br><b>العلاج:</b> تحسين التصريف، ورش مبيدات فطرية.",
-            "قمح": "<b>الأمراض:</b> الصدأ الأصفر.<br><b>العلاج:</b> استخدام أصناف مقاومة، ورش مبيدات فطرية.",
-            "بطاطا": "<b>الأمراض:</b> اللفحة المتأخرة.<br><b>العلاج:</b> تقليل الرطوبة، ورش مبيدات نحاسية وقائية.",
-            "بصل": "<b>الأمراض:</b> البياض الزغبي.<br><b>العلاج:</b> تجنب الري الزائد، ورش مبيدات فطرية.",
-            "تفاح": "<b>الأمراض:</b> الجرب، العفن.<br><b>العلاج:</b> رش نحاسي في الشتاء، ومبيدات فطرية في الربيع.",
-            "عنب": "<b>الأمراض:</b> البياض الدقيقي والزغبي.<br><b>العلاج:</b> رش الكبريت، وتقليم جيد للتهوية.",
-            "ليمون": "<b>الأمراض:</b> التصمغ، الأصداء.<br><b>العلاج:</b> معالجة الصرف، ورش مركبات نحاسية.",
-            "باذنجان": "<b>الأمراض:</b> الذبول الفيروسي.<br><b>العلاج:</b> مكافحة الحشرات الناقلة (الذبابة البيضاء).",
-            "جزر": "<b>الأمراض:</b> تعفن الجذور.<br><b>العلاج:</b> تحسين تهوية التربة، وتجنب الإفراط في الري.",
-            "كوسة": "<b>الأمراض:</b> البياض الدقيقي.<br><b>العلاج:</b> رش الكبريت الميكروني.",
-            "شعير": "<b>الأمراض:</b> التفحم.<br><b>العلاج:</b> معالجة البذور قبل الزراعة."
+            "زيتون": `
+                <b>المرض:</b> عين الطاووس (Œil de paon)<br>
+                <b>المبيد:</b> أوكسي كلورور النحاس (Oxyde de cuivre) أو مركبات النحاس.<br>
+                <b>وقت الرش:</b> في الخريف (بعد القطف) وفي أوائل الربيع. يفضل الرش في الصباح الباكر.<br>
+                <span class="warning">⚠️ تحذير: تجنب الرش أثناء الرياح القوية أو قبل هطول الأمطار مباشرة.</span>
+            `,
+            "طماطم": `
+                <b>المرض:</b> اللفحة المتأخرة (Mildiou) أو البياض الدقيقي.<br>
+                <b>المبيد:</b> مانكوزيب (Mancozeb) أو مبيدات نحاسية وقائية.<br>
+                <b>وقت الرش:</b> عند بداية ظهور الأعراض، وفي الأجواء الرطبة (قبل الأمطار).<br>
+                <span class="warning">⚠️ تحذير: تجنب الري بالرشاشات العلوية لتقليل انتشار الفطريات.</span>
+            `,
+            "رمان": `
+                <b>المرض:</b> لفحة الأزهار (Anthracnose) ودودة الثمار.<br>
+                <b>المبيد:</b> مبيد فطري (مثل كلوروثالونيل) + مصائد فرمونية للحشرات.<br>
+                <b>وقت الرش:</b> خلال فترة التزهير (الربيع) ومرة أخرى عند عقد الثمار.<br>
+                <span class="warning">⚠️ تحذير: لا ترش أثناء التزهير المفتوح لتجنب قتل النحل الملقح.</span>
+            `,
+            "خوخ": `
+                <b>المرض:</b> تجعد أوراق الخوخ (Cloque) والعفن البني.<br>
+                <b>المبيد:</b> مركبات النحاس (Bouillie bordelaise).<br>
+                <b>وقت الرش:</b> في أواخر الخريف (بعد سقوط الأوراق) وفي بداية انتفاخ البراعم في الربيع.<br>
+                <span class="warning">⚠️ تحذير: الرش النحاسي ضروري جداً قبل تفتح الأوراق.</span>
+            `,
+            "عنب": `
+                <b>المرض:</b> البياض الدقيقي (Oïdium) والزغبي (Mildiou).<br>
+                <b>المبيد:</b> الكبريت الميكروني (للبياض الدقيقي) والنحاس (للزغبي).<br>
+                <b>وقت الرش:</b> عند ظهور 3-5 أوراق، وقبل الإزهار.<br>
+                <span class="warning">⚠️ تحذير: لا ترش الكبريت إذا كانت الحرارة تتجاوز 30 درجة مئوية (يسبب حروق للأوراق).</span>
+            `,
+            "تفاح": `
+                <b>المرض:</b> الجرب (Tavelure) والعفن.<br>
+                <b>المبيد:</b> مبيدات فطرية جهازية (مثل Difenoconazole) أو نحاس.<br>
+                <b>وقت الرش:</b> من مرحلة انتفاخ البراعم حتى نهاية الإزهار (حسب حالة الطقس).<br>
+                <span class="warning">⚠️ تحذير: راقب الرطوبة، فالجرب ينتشر بسرعة في الجو الممطر.</span>
+            `,
+            "ليمون": `
+                <b>المرض:</b> التصمغ (Gommose) والأصداء.<br>
+                <b>المبيد:</b> أوكسي كلورور النحاس + معالجة التربة.<br>
+                <b>وقت الرش:</b> بعد القطف في الربيع.<br>
+                <span class="warning">⚠️ تحذير: التصمغ غالباً بسبب سوء الصرف، تأكد من تصريف الماء حول الجذور.</span>
+            `,
+            "فلفل": `
+                <b>المرض:</b> الذبول والبياض.<br>
+                <b>المبيد:</b> مبيدات فطرية نحاسية.<br>
+                <b>وقت الرش:</b> عند بداية التزهير.<br>
+            `,
+            "بطاطا": `
+                <b>المرض:</b> اللفحة المتأخرة.<br>
+                <b>المبيد:</b> مانكوزيب أو نحاس.<br>
+                <b>وقت الرش:</b> في الجو الرطب وقبل الأمطار.<br>
+            `,
+            "قمح": `
+                <b>المرض:</b> الصدأ الأصفر.<br>
+                <b>المبيد:</b> مبيدات فطرية (Triazoles).<br>
+                <b>وقت الرش:</b> عند ظهور أول بقع صفراء على الأوراق.<br>
+            `
         };
 
         function getTreatment() {
@@ -265,7 +308,7 @@
                 resultDiv.innerHTML = cropsDB[input];
                 resultDiv.style.display = 'block';
             } else if (input !== "") {
-                resultDiv.innerHTML = "❌ هذا المحصول غير مدرج حالياً. يرجى استشارة مهندس زراعي.";
+                resultDiv.innerHTML = "❌ هذا المحصول غير مدرج حالياً. يرجى استشارة مهندس زراعي للحصول على وصفة دقيقة.";
                 resultDiv.style.display = 'block';
             } else {
                 resultDiv.style.display = 'none';
@@ -280,4 +323,329 @@
         } else { getWeather(); getPrayerTimes(); }
     </script>
 </body>
-    </html>
+    </html><!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MeteoHrouz - الطقس والإرشاد الفلاحي</title>
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#0d1b2a">
+    <style>
+        :root {
+            --bg-color: #0d1b2a;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --primary: #4caf50;
+            --text-light: #e0e1dd;
+        }
+        body { 
+            font-family: Tahoma, sans-serif; 
+            background: linear-gradient(180deg, #0d1b2a 0%, #1b263b 100%);
+            color: var(--text-light);
+            margin: 0; 
+            padding: 0;
+            padding-bottom: 150px; 
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        .tab-content { display: none; padding: 15px; animation: fadeIn 0.4s; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .card { 
+            background: var(--card-bg); 
+            padding: 15px; 
+            border-radius: 15px; 
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 15px; 
+            text-align: center;
+        }
+        h1, h2 { color: #fff; margin-top: 0; }
+        .temp { font-size: 55px; font-weight: bold; margin: 5px 0; }
+        .desc { font-size: 18px; color: #a9b4c2; }
+        
+        .details { display: flex; justify-content: space-around; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
+        .detail-item { font-size: 14px; }
+        .detail-item b { display: block; font-size: 16px; color: #fff; margin-top: 5px; }
+
+        .forecast-container { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; }
+        .forecast-container::-webkit-scrollbar { display: none; }
+        .forecast-day { 
+            min-width: 85px; background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 10px; 
+            text-align: center; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.2s;
+        }
+        .forecast-day:active { background: rgba(255, 255, 255, 0.2); }
+        .forecast-day .day-name { font-size: 13px; color: #a9b4c2; margin-bottom: 5px; }
+        .forecast-day .icon { font-size: 24px; margin: 5px 0; }
+        .forecast-day .temps { font-size: 14px; font-weight: bold; }
+        .forecast-day .rain { font-size: 11px; color: #4fc3f7; }
+
+        .prayer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+        .prayer-item { background: rgba(255, 255, 255, 0.05); padding: 8px; border-radius: 8px; font-size: 13px; }
+        .prayer-item b { display: block; font-size: 15px; margin-top: 3px; color: #fff; }
+
+        .search-box { display: flex; gap: 5px; margin-top: 10px; }
+        .search-box input { flex: 1; padding: 12px; border-radius: 8px; border: none; background: rgba(255,255,255,0.2); color: white; font-family: Tahoma; }
+        .search-box input::placeholder { color: #ccc; }
+        .search-box button { padding: 0 20px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; }
+        
+        /* تنسيق النصائح الطبية للنبات */
+        .advice-box { background: rgba(76, 175, 80, 0.2); border-right: 4px solid var(--primary); padding: 12px; border-radius: 5px; text-align: right; margin-top: 10px; font-size: 14px; line-height: 1.8; }
+        .advice-box b { color: #81c784; }
+        .advice-box .warning { color: #ffb74d; font-size: 12px; display: block; margin-top: 5px; }
+        
+        .hint-text { font-size: 11px; color: #a9b4c2; text-align: right; margin-top: 5px; }
+
+        .radar-container { width: 100%; height: 60vh; border-radius: 15px; overflow: hidden; }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        .bottom-nav { position: fixed; bottom: 0; left: 0; width: 100%; background: #1b263b; display: flex; justify-content: space-around; padding: 10px 0; border-top: 1px solid rgba(255,255,255,0.1); z-index: 1000; }
+        .nav-item { display: flex; flex-direction: column; align-items: center; color: #a9b4c2; font-size: 12px; cursor: pointer; transition: 0.3s; }
+        .nav-item.active { color: var(--primary); }
+        .nav-item i { font-size: 20px; margin-bottom: 4px; }
+    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+
+    <div id="home" class="tab-content active">
+        <div class="card">
+            <h1>MeteoHrouz 🌤️</h1>
+            <div id="location-name" class="desc">جاري تحديد الموقع...</div>
+            <div class="temp" id="temp">--°</div>
+            <div class="desc" id="desc">جاري التحميل...</div>
+            <div class="details">
+                <div class="detail-item">💨 الرياح <b id="wind">-- km/h</b></div>
+                <div class="detail-item">💧 الرطوبة <b id="humidity">--%</b></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📅 توقعات 7 أيام</h2>
+            <div class="forecast-container" id="forecast-container"></div>
+        </div>
+
+        <div class="card">
+            <h2>🕌 مواقيت الصلاة</h2>
+            <div class="prayer-grid">
+                <div class="prayer-item">الفجر <b id="fajr">--:--</b></div>
+                <div class="prayer-item">الظهر <b id="dhuhr">--:--</b></div>
+                <div class="prayer-item">العصر <b id="asr">--:--</b></div>
+                <div class="prayer-item">المغرب <b id="maghrib">--:--</b></div>
+                <div class="prayer-item">العشاء <b id="isha">--:--</b></div>
+                <div class="prayer-item">الشروق <b id="sunrise">--:--</b></div>
+            </div>
+        </div>
+    </div>
+
+    <div id="radar" class="tab-content">
+        <h2 style="text-align:center;">🌧️ رادار الأمطار</h2>
+        <div class="radar-container">
+            <iframe src="https://embed.windy.com/embed2.html?lat=35.15&lon=9.85&zoom=7&level=surface&overlay=rain&product=ecmwf&menu=true&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=default&metricTemp=default&radarRange=-1"></iframe>
+        </div>
+    </div>
+
+    <div id="agri" class="tab-content">
+        <div class="card">
+            <h2>🌱 الإرشاد الفلاحي (الطقس)</h2>
+            <div class="advice-box" id="weather-advice">جاري التحليل...</div>
+        </div>
+        
+        <div class="card">
+            <h2>🍃 طبيب النباتات الذكي</h2>
+            <div class="desc" style="margin-bottom:10px;">اكتب اسم النبتة لمعرفة المرض، الدواء، ووقت الرش</div>
+            <div class="search-box">
+                <input type="text" id="cropInput" placeholder="مثال: زيتون، طماطم، عنب...">
+                <button onclick="getTreatment()">بحث</button>
+            </div>
+            <div class="hint-text">أمثلة: زيتون، طماطم، رمان، خوخ، عنب، تفاح، ليمون...</div>
+            <div class="advice-box" id="treatmentResult" style="display:none;"></div>
+        </div>
+    </div>
+
+    <div id="settings" class="tab-content">
+        <div class="card">
+            <h2>⚙️ حول التطبيق</h2>
+            <p style="line-height:1.6; font-size:14px; color:#a9b4c2;">
+                تطبيق <b>MeteoHrouz</b> هو رفيقك اليومي للطقس والإرشاد الفلاحي.<br><br>
+                - الإصدار 2.3 (طبيب النباتات).<br>
+                - البيانات مستمدة من Open-Meteo و Aladhan API.<br>
+            </p>
+        </div>
+    </div>
+
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('home', this)"><i class="fas fa-home"></i><span>الرئيسية</span></div>
+        <div class="nav-item" onclick="switchTab('radar', this)"><i class="fas fa-satellite-dish"></i><span>الرادار</span></div>
+        <div class="nav-item" onclick="switchTab('agri', this)"><i class="fas fa-leaf"></i><span>الإرشاد</span></div>
+        <div class="nav-item" onclick="switchTab('settings', this)"><i class="fas fa-cog"></i><span>الإعدادات</span></div>
+    </div>
+
+    <script>
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+        }
+
+        let lat = 35.15; 
+        let lon = 9.85;
+        let cityName = "الرضاع الشرقية، تونس";
+
+        function getWeatherInfo(code) {
+            if (code === 0) return { text: "صافي", icon: "☀️" };
+            if (code >= 1 && code <= 3) return { text: "غائم جزئياً", icon: "⛅" };
+            if (code >= 45 && code <= 48) return { text: "ضباب", icon: "🌫️" };
+            if (code >= 51 && code <= 67) return { text: "أمطار", icon: "🌧️" };
+            if (code >= 71 && code <= 77) return { text: "ثلوج", icon: "❄️" };
+            if (code >= 80 && code <= 82) return { text: "أمطار غزيرة", icon: "🌦️" };
+            if (code >= 95) return { text: "عواصف رعدية", icon: "⛈️" };
+            return { text: "غير معروف", icon: "🌍" };
+        }
+
+        function getWeather() {
+            document.getElementById('location-name').innerText = cityName;
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
+            
+            fetch(url).then(res => res.json()).then(data => {
+                const current = data.current;
+                const info = getWeatherInfo(current.weather_code);
+                document.getElementById('temp').innerText = Math.round(current.temperature_2m) + '°';
+                document.getElementById('desc').innerText = info.text + " " + info.icon;
+                document.getElementById('wind').innerText = current.wind_speed_10m + ' km/h';
+                document.getElementById('humidity').innerText = current.relative_humidity_2m + '%';
+
+                let advice = "";
+                if (current.wind_speed_10m > 25) advice += "⚠️ <b>الرياح قوية:</b> تجنب رش المبيدات.<br>";
+                if (current.temperature_2m > 32) advice += "☀️ <b>حرارة مرتفعة:</b> يفضل الري في الصباح الباكر.<br>";
+                else if (current.temperature_2m < 10) advice += "❄️ <b>برودة:</b> انتبه للمحاصيل الحساسة.<br>";
+                if (current.weather_code >= 50) advice += "🌧️ <b>أمطار:</b> تأكد من تصريف المياه.<br>";
+                if (advice === "") advice = "✅ الظروف الجوية ممتازة للأعمال الزراعية اليوم.";
+                document.getElementById('weather-advice').innerHTML = advice;
+
+                const daily = data.daily;
+                const forecastContainer = document.getElementById('forecast-container');
+                forecastContainer.innerHTML = '';
+                const daysAr = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+                
+                for (let i = 0; i < 7; i++) {
+                    let date = new Date(daily.time[i]);
+                    let dayName = daysAr[date.getDay()];
+                    let dInfo = getWeatherInfo(daily.weather_code[i]);
+                    let div = document.createElement('div');
+                    div.className = 'forecast-day';
+                    div.innerHTML = `
+                        <div class="day-name">${dayName}</div>
+                        <div class="icon">${dInfo.icon}</div>
+                        <div class="temps">${Math.round(daily.temperature_2m_max[i])}° / ${Math.round(daily.temperature_2m_min[i])}°</div>
+                        <div class="rain">💧 ${daily.precipitation_probability_max[i]}%</div>
+                    `;
+                    div.onclick = () => {
+                        alert(`تفاصيل يوم ${dayName}:\n\nالطقس: ${dInfo.text} ${dInfo.icon}\nالحرارة العظمى: ${Math.round(daily.temperature_2m_max[i])}°C\nالحرارة الصغرى: ${Math.round(daily.temperature_2m_min[i])}°C\nاحتمال الأمطار: ${daily.precipitation_probability_max[i]}%`);
+                    };
+                    forecastContainer.appendChild(div);
+                }
+            });
+        }
+
+        function getPrayerTimes() {
+            fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=2`)
+                .then(res => res.json()).then(data => {
+                    const t = data.data.timings;
+                    document.getElementById('fajr').innerText = t.Fajr;
+                    document.getElementById('dhuhr').innerText = t.Dhuhr;
+                    document.getElementById('asr').innerText = t.Asr;
+                    document.getElementById('maghrib').innerText = t.Maghrib;
+                    document.getElementById('isha').innerText = t.Isha;
+                    document.getElementById('sunrise').innerText = t.Sunrise;
+                });
+        }
+
+        // 🌿 قاعدة البيانات الطبية الجديدة (المرض + المبيد + وقت الرش + تحذير)
+        const cropsDB = {
+            "زيتون": `
+                <b>المرض:</b> عين الطاووس (Œil de paon)<br>
+                <b>المبيد:</b> أوكسي كلورور النحاس (Oxyde de cuivre) أو مركبات النحاس.<br>
+                <b>وقت الرش:</b> في الخريف (بعد القطف) وفي أوائل الربيع. يفضل الرش في الصباح الباكر.<br>
+                <span class="warning">⚠️ تحذير: تجنب الرش أثناء الرياح القوية أو قبل هطول الأمطار مباشرة.</span>
+            `,
+            "طماطم": `
+                <b>المرض:</b> اللفحة المتأخرة (Mildiou) أو البياض الدقيقي.<br>
+                <b>المبيد:</b> مانكوزيب (Mancozeb) أو مبيدات نحاسية وقائية.<br>
+                <b>وقت الرش:</b> عند بداية ظهور الأعراض، وفي الأجواء الرطبة (قبل الأمطار).<br>
+                <span class="warning">⚠️ تحذير: تجنب الري بالرشاشات العلوية لتقليل انتشار الفطريات.</span>
+            `,
+            "رمان": `
+                <b>المرض:</b> لفحة الأزهار (Anthracnose) ودودة الثمار.<br>
+                <b>المبيد:</b> مبيد فطري (مثل كلوروثالونيل) + مصائد فرمونية للحشرات.<br>
+                <b>وقت الرش:</b> خلال فترة التزهير (الربيع) ومرة أخرى عند عقد الثمار.<br>
+                <span class="warning">⚠️ تحذير: لا ترش أثناء التزهير المفتوح لتجنب قتل النحل الملقح.</span>
+            `,
+            "خوخ": `
+                <b>المرض:</b> تجعد أوراق الخوخ (Cloque) والعفن البني.<br>
+                <b>المبيد:</b> مركبات النحاس (Bouillie bordelaise).<br>
+                <b>وقت الرش:</b> في أواخر الخريف (بعد سقوط الأوراق) وفي بداية انتفاخ البراعم في الربيع.<br>
+                <span class="warning">⚠️ تحذير: الرش النحاسي ضروري جداً قبل تفتح الأوراق.</span>
+            `,
+            "عنب": `
+                <b>المرض:</b> البياض الدقيقي (Oïdium) والزغبي (Mildiou).<br>
+                <b>المبيد:</b> الكبريت الميكروني (للبياض الدقيقي) والنحاس (للزغبي).<br>
+                <b>وقت الرش:</b> عند ظهور 3-5 أوراق، وقبل الإزهار.<br>
+                <span class="warning">⚠️ تحذير: لا ترش الكبريت إذا كانت الحرارة تتجاوز 30 درجة مئوية (يسبب حروق للأوراق).</span>
+            `,
+            "تفاح": `
+                <b>المرض:</b> الجرب (Tavelure) والعفن.<br>
+                <b>المبيد:</b> مبيدات فطرية جهازية (مثل Difenoconazole) أو نحاس.<br>
+                <b>وقت الرش:</b> من مرحلة انتفاخ البراعم حتى نهاية الإزهار (حسب حالة الطقس).<br>
+                <span class="warning">⚠️ تحذير: راقب الرطوبة، فالجرب ينتشر بسرعة في الجو الممطر.</span>
+            `,
+            "ليمون": `
+                <b>المرض:</b> التصمغ (Gommose) والأصداء.<br>
+                <b>المبيد:</b> أوكسي كلورور النحاس + معالجة التربة.<br>
+                <b>وقت الرش:</b> بعد القطف في الربيع.<br>
+                <span class="warning">⚠️ تحذير: التصمغ غالباً بسبب سوء الصرف، تأكد من تصريف الماء حول الجذور.</span>
+            `,
+            "فلفل": `
+                <b>المرض:</b> الذبول والبياض.<br>
+                <b>المبيد:</b> مبيدات فطرية نحاسية.<br>
+                <b>وقت الرش:</b> عند بداية التزهير.<br>
+            `,
+            "بطاطا": `
+                <b>المرض:</b> اللفحة المتأخرة.<br>
+                <b>المبيد:</b> مانكوزيب أو نحاس.<br>
+                <b>وقت الرش:</b> في الجو الرطب وقبل الأمطار.<br>
+            `,
+            "قمح": `
+                <b>المرض:</b> الصدأ الأصفر.<br>
+                <b>المبيد:</b> مبيدات فطرية (Triazoles).<br>
+                <b>وقت الرش:</b> عند ظهور أول بقع صفراء على الأوراق.<br>
+            `
+        };
+
+        function getTreatment() {
+            const input = document.getElementById('cropInput').value.trim();
+            const resultDiv = document.getElementById('treatmentResult');
+            
+            if (cropsDB[input]) {
+                resultDiv.innerHTML = cropsDB[input];
+                resultDiv.style.display = 'block';
+            } else if (input !== "") {
+                resultDiv.innerHTML = "❌ هذا المحصول غير مدرج حالياً. يرجى استشارة مهندس زراعي للحصول على وصفة دقيقة.";
+                resultDiv.style.display = 'block';
+            } else {
+                resultDiv.style.display = 'none';
+            }
+        }
+
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(
+                (pos) => { lat = pos.coords.latitude; lon = pos.coords.longitude; cityName = "موقعك الحالي (GPS)"; getWeather(); getPrayerTimes(); },
+                (err) => { getWeather(); getPrayerTimes(); }
+            );
+        } else { getWeather(); getPrayerTimes(); }
+    </script>
+</body>
+        </html>
