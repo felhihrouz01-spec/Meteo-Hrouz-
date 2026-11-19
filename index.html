@@ -5,103 +5,312 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MeteoHrouz - الطقس والإرشاد الفلاحي</title>
     <link rel="manifest" href="manifest.json">
-    <meta name="theme-color" content="#2E7D32">
+    <meta name="theme-color" content="#0d1b2a">
     <style>
-        body { font-family: Tahoma, sans-serif; background-color: #f4f6f5; text-align: center; padding: 15px; margin: 0; }
-        .card { background: white; padding: 15px; border-radius: 15px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); max-width: 400px; margin: 0 auto 15px auto; }
-        h1 { color: #2E7D32; font-size: 22px; margin-bottom: 5px;}
-        h2 { color: #2E7D32; font-size: 18px; margin-top: 0; border-bottom: 1px solid #eee; padding-bottom: 10px;}
-        .subtitle { font-size: 14px; color: #666; margin-bottom: 10px;}
-        .temp { font-size: 48px; font-weight: bold; color: #333; margin: 5px 0; }
-        .desc { font-size: 18px; color: #666; }
-        .details { margin-top: 15px; display: flex; justify-content: space-around; border-top: 1px solid #eee; padding-top: 10px; }
-        .detail-item { font-size: 14px; color: #444; }
-        .advice-box { background-color: #e8f5e9; border-right: 5px solid #2E7D32; padding: 10px; border-radius: 5px; text-align: right; margin-top: 10px; font-size: 14px; line-height: 1.5; }
-        .prayer-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 15px; }
-        .prayer-item { background: #f8f9fa; padding: 10px; border-radius: 8px; border: 1px solid #e9ecef; font-size: 15px; font-weight: bold; color: #333; }
-        .prayer-item span { display: block; font-size: 13px; color: #666; font-weight: normal; }
+        :root {
+            --bg-color: #0d1b2a;
+            --card-bg: rgba(255, 255, 255, 0.1);
+            --primary: #4caf50;
+            --text-light: #e0e1dd;
+            --text-dark: #1b263b;
+        }
+        body { 
+            font-family: Tahoma, sans-serif; 
+            background: linear-gradient(180deg, #0d1b2a 0%, #1b263b 100%);
+            color: var(--text-light);
+            margin: 0; 
+            padding: 0;
+            padding-bottom: 70px; /* مساحة للشريط السفلي */
+            height: 100vh;
+            overflow-y: auto;
+        }
+        
+        /* التبويبات (Tabs) */
+        .tab-content { display: none; padding: 15px; animation: fadeIn 0.4s; }
+        .tab-content.active { display: block; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        /* التصميم العام للكروت */
+        .card { 
+            background: var(--card-bg); 
+            padding: 15px; 
+            border-radius: 15px; 
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 15px; 
+            text-align: center;
+        }
+        h1, h2 { color: #fff; margin-top: 0; }
+        .temp { font-size: 55px; font-weight: bold; margin: 5px 0; }
+        .desc { font-size: 18px; color: #a9b4c2; }
+        
+        /* تفاصيل الرياح والرطوبة */
+        .details { display: flex; justify-content: space-around; margin-top: 15px; border-top: 1px solid rgba(255,255,255,0.1); padding-top: 15px; }
+        .detail-item { font-size: 14px; }
+        .detail-item b { display: block; font-size: 16px; color: #fff; margin-top: 5px; }
+
+        /* توقعات 7 أيام */
+        .forecast-container { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; }
+        .forecast-container::-webkit-scrollbar { display: none; }
+        .forecast-day { min-width: 80px; background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.1); }
+        .forecast-day .day-name { font-size: 13px; color: #a9b4c2; margin-bottom: 5px; }
+        .forecast-day .icon { font-size: 24px; margin: 5px 0; }
+        .forecast-day .temps { font-size: 14px; font-weight: bold; }
+        .forecast-day .rain { font-size: 11px; color: #4fc3f7; }
+
+        /* مواقيت الصلاة */
+        .prayer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 10px; }
+        .prayer-item { background: rgba(255, 255, 255, 0.05); padding: 8px; border-radius: 8px; font-size: 13px; }
+        .prayer-item b { display: block; font-size: 15px; margin-top: 3px; color: #fff; }
+
+        /* الإرشاد الفلاحي */
+        .search-box { display: flex; gap: 5px; margin-top: 10px; }
+        .search-box input { flex: 1; padding: 12px; border-radius: 8px; border: none; background: rgba(255,255,255,0.2); color: white; font-family: Tahoma; }
+        .search-box input::placeholder { color: #ccc; }
+        .search-box button { padding: 0 20px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; }
+        .advice-box { background: rgba(76, 175, 80, 0.2); border-right: 4px solid var(--primary); padding: 10px; border-radius: 5px; text-align: right; margin-top: 10px; font-size: 14px; line-height: 1.6; }
+
+        /* الرادار */
+        .radar-container { width: 100%; height: 60vh; border-radius: 15px; overflow: hidden; }
+        iframe { width: 100%; height: 100%; border: none; }
+
+        /* الشريط السفلي (Bottom Nav) */
+        .bottom-nav { 
+            position: fixed; bottom: 0; left: 0; width: 100%; 
+            background: #1b263b; display: flex; justify-content: space-around; 
+            padding: 10px 0; border-top: 1px solid rgba(255,255,255,0.1); 
+            z-index: 1000;
+        }
+        .nav-item { 
+            display: flex; flex-direction: column; align-items: center; 
+            color: #a9b4c2; font-size: 12px; cursor: pointer; transition: 0.3s;
+        }
+        .nav-item.active { color: var(--primary); }
+        .nav-item i { font-size: 20px; margin-bottom: 4px; }
     </style>
+    <!-- استدعاء أيقونات FontAwesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
-    <div class="card">
-        <h1>MeteoHrouz 🌤️</h1>
-        <div class="subtitle" id="location-name">جاري تحديد الموقع...</div>
-        <div id="weather-loading">جاري تحميل الطقس...</div>
-        <div id="weather" style="display: none;">
-            <div class="temp" id="temp">--°C</div>
-            <div class="desc" id="desc">--</div>
+
+    <!-- 1. الواجهة الرئيسية -->
+    <div id="home" class="tab-content active">
+        <div class="card">
+            <h1>MeteoHrouz 🌤️</h1>
+            <div id="location-name" class="desc">جاري تحديد الموقع...</div>
+            <div class="temp" id="temp">--°</div>
+            <div class="desc" id="desc">جاري التحميل...</div>
             <div class="details">
-                <div class="detail-item">💨 الرياح<br><b id="wind">-- km/h</b></div>
-                <div class="detail-item">💧 الرطوبة<br><b id="humidity">--%</b></div>
+                <div class="detail-item">💨 الرياح <b id="wind">-- km/h</b></div>
+                <div class="detail-item">💧 الرطوبة <b id="humidity">--%</b></div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>📅 توقعات 7 أيام</h2>
+            <div class="forecast-container" id="forecast-container">
+                <!-- سيتم تعبئته بالجافاسكريبت -->
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>🕌 مواقيت الصلاة</h2>
+            <div class="prayer-grid">
+                <div class="prayer-item">الفجر <b id="fajr">--:--</b></div>
+                <div class="prayer-item">الظهر <b id="dhuhr">--:--</b></div>
+                <div class="prayer-item">العصر <b id="asr">--:--</b></div>
+                <div class="prayer-item">المغرب <b id="maghrib">--:--</b></div>
+                <div class="prayer-item">العشاء <b id="isha">--:--</b></div>
+                <div class="prayer-item">الشروق <b id="sunrise">--:--</b></div>
             </div>
         </div>
     </div>
 
-    <div class="card" id="agri-section" style="display: none;">
-        <h2>🌱 الإرشاد الفلاحي</h2>
-        <div class="advice-box" id="advice">جاري تحليل البيانات...</div>
+    <!-- 2. الرادار -->
+    <div id="radar" class="tab-content">
+        <h2 style="text-align:center;">🌧️ رادار الأمطار</h2>
+        <div class="radar-container">
+            <!-- خريطة حية من Windy -->
+            <iframe src="https://embed.windy.com/embed2.html?lat=35.15&lon=9.85&zoom=7&level=surface&overlay=rain&product=ecmwf&menu=&message=&marker=&calendar=&pressure=&type=map&location=coordinates&detail=&metricWind=default&metricTemp=default&radarRange=-1"></iframe>
+        </div>
     </div>
 
-    <div class="card" id="prayer-section" style="display: none;">
-        <h2>🕌 مواقيت الصلاة</h2>
-        <div class="prayer-grid">
-            <div class="prayer-item">الفجر <span id="fajr">--:--</span></div>
-            <div class="prayer-item">الظهر <span id="dhuhr">--:--</span></div>
-            <div class="prayer-item">العصر <span id="asr">--:--</span></div>
-            <div class="prayer-item">المغرب <span id="maghrib">--:--</span></div>
-            <div class="prayer-item">العشاء <span id="isha">--:--</span></div>
+    <!-- 3. الإرشاد الفلاحي الذكي -->
+    <div id="agri" class="tab-content">
+        <div class="card">
+            <h2>🌱 الإرشاد الفلاحي (الطقس)</h2>
+            <div class="advice-box" id="weather-advice">جاري التحليل...</div>
+        </div>
+        
+        <div class="card">
+            <h2>🍃 دليل أمراض المحاصيل</h2>
+            <div class="desc" style="margin-bottom:15px;">اكتب اسم النبتة لمعرفة العلاج</div>
+            <div class="search-box">
+                <input type="text" id="cropInput" placeholder="مثال: زيتون، طماطم...">
+                <button onclick="getTreatment()">بحث</button>
+            </div>
+            <div class="advice-box" id="treatmentResult" style="display:none;"></div>
+        </div>
+    </div>
+
+    <!-- 4. الإعدادات -->
+    <div id="settings" class="tab-content">
+        <div class="card">
+            <h2>⚙️ حول التطبيق</h2>
+            <p style="line-height:1.6; font-size:14px; color:#a9b4c2;">
+                تطبيق <b>MeteoHrouz</b> هو رفيقك اليومي للطقس والإرشاد الفلاحي في الرضاع الشرقية.<br><br>
+                - البيانات مستمدة من Open-Meteo و Aladhan API.<br>
+                - تم تطويره بحب لخدمة الفلاحين.<br><br>
+                <i>الإصدار 2.0</i>
+            </p>
+        </div>
+    </div>
+
+    <!-- الشريط السفلي -->
+    <div class="bottom-nav">
+        <div class="nav-item active" onclick="switchTab('home', this)">
+            <i class="fas fa-home"></i><span>الرئيسية</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('radar', this)">
+            <i class="fas fa-satellite-dish"></i><span>الرادار</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('agri', this)">
+            <i class="fas fa-leaf"></i><span>الإرشاد</span>
+        </div>
+        <div class="nav-item" onclick="switchTab('settings', this)">
+            <i class="fas fa-cog"></i><span>الإعدادات</span>
         </div>
     </div>
 
     <script>
+        // --- 1. التنقل بين التبويبات ---
+        function switchTab(tabId, element) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.nav-item').forEach(nav => nav.classList.remove('active'));
+            document.getElementById(tabId).classList.add('active');
+            element.classList.add('active');
+        }
+
+        // --- 2. إعدادات الموقع ---
         let lat = 35.15; 
         let lon = 9.85;
         let cityName = "الرضاع الشرقية، تونس";
 
-        function getWeather() {
-            document.getElementById('location-name').innerText = cityName;
-            fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('weather-loading').style.display = 'none';
-                    document.getElementById('weather').style.display = 'block';
-                    document.getElementById('agri-section').style.display = 'block';
-                    const current = data.current;
-                    document.getElementById('temp').innerText = current.temperature_2m + '°C';
-                    document.getElementById('wind').innerText = current.wind_speed_10m + ' km/h';
-                    document.getElementById('humidity').innerText = current.relative_humidity_2m + '%';
-                    let desc = "صافي"; if (current.weather_code > 3 && current.weather_code < 50) desc = "غائم"; if (current.weather_code >= 50) desc = "أمطار";
-                    document.getElementById('desc').innerText = desc;
-                    let advice = "";
-                    if (current.wind_speed_10m > 25) { advice += "⚠️ <b>الرياح قوية:</b> تجنب رش المبيدات.<br>"; }
-                    if (current.temperature_2m > 32) { advice += "☀️ <b>حرارة مرتفعة:</b> يفضل الري في الصباح الباكر.<br>"; }
-                    else if (current.temperature_2m < 10) { advice += "❄️ <b>برودة:</b> انتبه للمحاصيل الحساسة.<br>"; }
-                    if (current.weather_code >= 50) { advice += "🌧️ <b>أمطار:</b> تأكد من تصريف المياه.<br>"; }
-                    if (advice === "") { advice = "✅ الظروف الجوية ممتازة للأعمال الزراعية اليوم."; }
-                    document.getElementById('advice').innerHTML = advice;
-                });
+        // دالة تحويل كود الطقس إلى إيموجي ووصف
+        function getWeatherInfo(code) {
+            if (code === 0) return { text: "صافي", icon: "☀️" };
+            if (code >= 1 && code <= 3) return { text: "غائم جزئياً", icon: "⛅" };
+            if (code >= 45 && code <= 48) return { text: "ضباب", icon: "🌫️" };
+            if (code >= 51 && code <= 67) return { text: "أمطار", icon: "🌧️" };
+            if (code >= 71 && code <= 77) return { text: "ثلوج", icon: "❄️" };
+            if (code >= 80 && code <= 82) return { text: "أمطار غزيرة", icon: "🌦️" };
+            if (code >= 95) return { text: "عواصف رعدية", icon: "⛈️" };
+            return { text: "غير معروف", icon: "🌍" };
         }
 
+        // --- 3. جلب بيانات الطقس (الحالي + 7 أيام) ---
+        function getWeather() {
+            document.getElementById('location-name').innerText = cityName;
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
+            
+            fetch(url).then(res => res.json()).then(data => {
+                // الطقس الحالي
+                const current = data.current;
+                const info = getWeatherInfo(current.weather_code);
+                document.getElementById('temp').innerText = Math.round(current.temperature_2m) + '°';
+                document.getElementById('desc').innerText = info.text + " " + info.icon;
+                document.getElementById('wind').innerText = current.wind_speed_10m + ' km/h';
+                document.getElementById('humidity').innerText = current.relative_humidity_2m + '%';
+
+                // الإرشاد الفلاحي (حسب الطقس)
+                let advice = "";
+                if (current.wind_speed_10m > 25) advice += "⚠️ <b>الرياح قوية:</b> تجنب رش المبيدات.<br>";
+                if (current.temperature_2m > 32) advice += "☀️ <b>حرارة مرتفعة:</b> يفضل الري في الصباح الباكر.<br>";
+                else if (current.temperature_2m < 10) advice += "❄️ <b>برودة:</b> انتبه للمحاصيل الحساسة.<br>";
+                if (current.weather_code >= 50) advice += "🌧️ <b>أمطار:</b> تأكد من تصريف المياه.<br>";
+                if (advice === "") advice = "✅ الظروف الجوية ممتازة للأعمال الزراعية اليوم.";
+                document.getElementById('weather-advice').innerHTML = advice;
+
+                // توقعات 7 أيام
+                const daily = data.daily;
+                const forecastContainer = document.getElementById('forecast-container');
+                forecastContainer.innerHTML = ''; // تفريغ
+                
+                const daysAr = ['الأحد', 'الإثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
+                
+                for (let i = 0; i < 7; i++) {
+                    let date = new Date(daily.time[i]);
+                    let dayName = daysAr[date.getDay()];
+                    let dInfo = getWeatherInfo(daily.weather_code[i]);
+                    
+                    let div = document.createElement('div');
+                    div.className = 'forecast-day';
+                    div.innerHTML = `
+                        <div class="day-name">${dayName}</div>
+                        <div class="icon">${dInfo.icon}</div>
+                        <div class="temps">${Math.round(daily.temperature_2m_max[i])}° / ${Math.round(daily.temperature_2m_min[i])}°</div>
+                        <div class="rain">💧 ${daily.precipitation_probability_max[i]}%</div>
+                    `;
+                    forecastContainer.appendChild(div);
+                }
+            });
+        }
+
+        // --- 4. جلب مواقيت الصلاة ---
         function getPrayerTimes() {
             fetch(`https://api.aladhan.com/v1/timings?latitude=${lat}&longitude=${lon}&method=2`)
-                .then(response => response.json())
-                .then(data => {
-                    document.getElementById('prayer-section').style.display = 'block';
+                .then(res => res.json()).then(data => {
                     const t = data.data.timings;
                     document.getElementById('fajr').innerText = t.Fajr;
                     document.getElementById('dhuhr').innerText = t.Dhuhr;
                     document.getElementById('asr').innerText = t.Asr;
                     document.getElementById('maghrib').innerText = t.Maghrib;
                     document.getElementById('isha').innerText = t.Isha;
+                    document.getElementById('sunrise').innerText = t.Sunrise;
                 });
         }
 
+        // --- 5. دليل أمراض المحاصيل (فلاح ذكي) ---
+        const cropsDB = {
+            "زيتون": "<b>الأمراض:</b> عين الطاووس، ذبابة الزيتون.<br><b>العلاج:</b> رش مركبات النحاس، واستخدام مصائد صفراء.",
+            "طماطم": "<b>الأمراض:</b> البياض الدقيقي، اللفحة.<br><b>العلاج:</b> مبيدات فطرية (نحاس/كبريت)، وتجنب الري العلوي.",
+            "رمان": "<b>الأمراض:</b> لفحة الأزهار، دودة الثمار.<br><b>العلاج:</b> رش مبيدات فطرية، ومصائد فرمونية.",
+            "خوخ": "<b>الأمراض:</b> تجعد الأوراق، العفن البني.<br><b>العلاج:</b> رش نحاسي في الخريف، ومبيدات فطرية في الربيع.",
+            "فلفل": "<b>الأمراض:</b> الذبول، البياض.<br><b>العلاج:</b> تحسين التصريف، ورش مبيدات فطرية.",
+            "قمح": "<b>الأمراض:</b> الصدأ الأصفر.<br><b>العلاج:</b> استخدام أصناف مقاومة، ورش مبيدات فطرية三唑类."
+        };
+
+        function getTreatment() {
+            const input = document.getElementById('cropInput').value.trim();
+            const resultDiv = document.getElementById('treatmentResult');
+            
+            if (cropsDB[input]) {
+                resultDiv.innerHTML = cropsDB[input];
+                resultDiv.style.display = 'block';
+            } else if (input !== "") {
+                resultDiv.innerHTML = "❌ هذا المحصول غير مدرج حالياً. يرجى استشارة مهندس زراعي.";
+                resultDiv.style.display = 'block';
+            } else {
+                resultDiv.style.display = 'none';
+            }
+        }
+
+        // --- 6. تشغيل التطبيق وجلب الموقع ---
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
-                (position) => { lat = position.coords.latitude; lon = position.coords.longitude; cityName = "موقعك الحالي (GPS)"; getWeather(); getPrayerTimes(); },
-                (error) => { getWeather(); getPrayerTimes(); }
+                (pos) => { 
+                    lat = pos.coords.latitude; 
+                    lon = pos.coords.longitude; 
+                    cityName = "موقعك الحالي (GPS)"; 
+                    getWeather(); getPrayerTimes(); 
+                },
+                (err) => { 
+                    getWeather(); getPrayerTimes(); // إذا رفض الموقع، نستخدموا الإحداثيات الافتراضية
+                }
             );
-        } else { getWeather(); getPrayerTimes(); }
+        } else { 
+            getWeather(); getPrayerTimes(); 
+        }
     </script>
 </body>
-</html>
+                    </html>
