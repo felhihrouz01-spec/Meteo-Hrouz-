@@ -1,4 +1,4 @@
-      <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="ar" dir="rtl">
 <head>
     <meta charset="UTF-8">
@@ -8,14 +8,12 @@
     <meta name="theme-color" content="#0d1b2a">
     <style>
         :root {
-            --bg-gradient: linear-gradient(180deg, #0d1b2a 0%, #1b263b 100%);
-            --card-bg: rgba(255, 255, 255, 0.1);
             --primary: #4caf50;
             --text-light: #e0e1dd;
         }
         body { 
             font-family: Tahoma, sans-serif; 
-            background: var(--bg-gradient);
+            background: linear-gradient(180deg, #0d1b2a 0%, #1b263b 100%);
             color: var(--text-light);
             margin: 0; padding: 0; padding-bottom: 150px; height: 100vh; overflow-y: auto;
             transition: background 1s ease-in-out;
@@ -25,7 +23,7 @@
         .tab-content.active { display: block; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .card { background: var(--card-bg); padding: 15px; border-radius: 15px; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 15px; text-align: center; }
+        .card { background: rgba(255, 255, 255, 0.1); padding: 15px; border-radius: 15px; backdrop-filter: blur(10px); border: 1px solid rgba(255, 255, 255, 0.1); margin-bottom: 15px; text-align: center; }
         h1, h2 { color: #fff; margin-top: 0; }
         .temp { font-size: 55px; font-weight: bold; margin: 5px 0; }
         .desc { font-size: 18px; color: #a9b4c2; }
@@ -53,16 +51,14 @@
         .advice-box b { color: #81c784; }
         .warning { color: #ffb74d; font-size: 12px; display: block; margin-top: 5px; }
         
-        /* تنسيقات الكاميرا والذكاء الاصطناعي */
         .camera-btn { background: #2196F3; color: white; padding: 15px; border-radius: 10px; border: none; width: 100%; font-size: 16px; font-weight: bold; cursor: pointer; margin-bottom: 10px; display: flex; justify-content: center; align-items: center; gap: 10px; }
         .camera-btn i { font-size: 20px; }
         #imagePreview { max-width: 100%; border-radius: 10px; margin-top: 10px; display: none; }
         #aiResult { display: none; text-align: right; padding: 10px; border-radius: 8px; margin-top: 10px; font-weight: bold; }
 
-        .radar-container { width: 100%; height: 60vh; border-radius: 15px; overflow: hidden; }
+        .radar-container { width: 100%; height: 65vh; border-radius: 15px; overflow: hidden; }
         iframe { width: 100%; height: 100%; border: none; }
 
-        /* الترجمة */
         .lang-selector { padding: 10px; border-radius: 8px; background: rgba(255,255,255,0.2); color: white; border: none; width: 100%; margin-top: 10px; font-family: Tahoma; font-size: 16px; }
         .lang-selector option { color: black; }
 
@@ -108,12 +104,11 @@
     <div id="radar" class="tab-content">
         <h2 style="text-align:center;" data-key="radar_title">🌧️ رادار الأمطار</h2>
         <div class="radar-container">
-            <iframe src="https://embed.windy.com/embed2.html?lat=35.15&lon=9.85&zoom=7&level=surface&overlay=rain&product=ecmwf&menu=true&message=true&marker=true&calendar=now&pressure=true&type=map&location=coordinates&detail=true&metricWind=default&metricTemp=default&radarRange=-1"></iframe>
+            <iframe src="https://embed.windy.com/embed2.html?lat=35.15&lon=9.85&zoom=7&level=surface&overlay=rain&product=ecmwf&menu=false&message=false&marker=false&calendar=now&pressure=false&type=map&location=coordinates&detail=false&metricWind=default&metricTemp=default&radarRange=-1"></iframe>
         </div>
     </div>
 
     <div id="agri" class="tab-content">
-        <!-- الكاميرا والذكاء الاصطناعي -->
         <div class="card">
             <h2 data-key="ai_camera_title">📸 فحص النبتة بالكاميرا (تجريبي)</h2>
             <p class="desc" data-key="ai_camera_desc" style="font-size:13px;">صور الورقة باش نعطوك تحليل مبدئي.</p>
@@ -134,7 +129,7 @@
             <h2 data-key="crop_doctor_title">🍃 طبيب النباتات الذكي</h2>
             <div class="desc" style="margin-bottom:10px;" data-key="crop_doctor_desc">اكتب اسم النبتة لمعرفة المرض والدواء</div>
             <div class="search-box">
-                <input type="text" id="cropInput" placeholder="مثال: زيتون، طماطم...">
+                <input type="text" id="cropInput" placeholder="مثال: زيتون، بسباس، بطيخ...">
                 <button onclick="getTreatment()" data-key="search">بحث</button>
             </div>
             <div class="advice-box" id="treatmentResult" style="display:none;"></div>
@@ -154,7 +149,7 @@
             <h2 data-key="about_title">حول التطبيق</h2>
             <p style="line-height:1.6; font-size:14px; color:#a9b4c2;" data-key="about_desc">
                 تطبيق MeteoHrouz هو رفيقك اليومي للطقس والإرشاد الفلاحي.<br><br>
-                - الإصدار 3.0 (الترجمة والكاميرا).
+                - الإصدار 3.2 (قاعدة بيانات ضخمة للمحاصيل).
             </p>
         </div>
     </div>
@@ -167,14 +162,13 @@
     </div>
 
     <script>
-        // --- الترجمة ---
         const translations = {
             ar: {
                 loading_loc: "جاري تحديد الموقع...", loading: "جاري التحميل...", wind: "💨 الرياح", humidity: "💧 الرطوبة",
                 forecast7: "📅 توقعات 7 أيام", prayer_times: "🕌 مواقيت الصلاة", fajr: "الفجر", dhuhr: "الظهر", asr: "العصر", maghrib: "المغرب", isha: "العشاء", sunrise: "الشروق",
                 radar_title: "🌧️ رادار الأمطار", ai_camera_title: "📸 فحص النبتة بالكاميرا (تجريبي)", ai_camera_desc: "صور الورقة باش نعطوك تحليل مبدئي.", take_photo: "التقاط صورة",
                 weather_agri_title: "🌱 الإرشاد الفلاحي (الطقس)", crop_doctor_title: "🍃 طبيب النباتات الذكي", crop_doctor_desc: "اكتب اسم النبتة لمعرفة المرض والدواء", search: "بحث",
-                settings_title: "⚙️ الإعدادات واللغة", about_title: "حول التطبيق", about_desc: "تطبيق MeteoHrouz هو رفيقك اليومي للطقس والإرشاد الفلاحي.<br><br>- الإصدار 3.0 (الترجمة والكاميرا).",
+                settings_title: "⚙️ الإعدادات واللغة", about_title: "حول التطبيق", about_desc: "تطبيق MeteoHrouz هو رفيقك اليومي للطقس والإرشاد الفلاحي.<br><br>- الإصدار 3.2.",
                 nav_home: "الرئيسية", nav_radar: "الرادار", nav_agri: "الإرشاد", nav_settings: "الإعدادات"
             },
             fr: {
@@ -182,7 +176,7 @@
                 forecast7: "📅 Prévisions 7 jours", prayer_times: "🕌 Heures de prière", fajr: "Fajr", dhuhr: "Dhuhr", asr: "Asr", maghrib: "Maghrib", isha: "Isha", sunrise: "Lever du soleil",
                 radar_title: "🌧️ Radar de pluie", ai_camera_title: "📸 Scan de plante (Beta)", ai_camera_desc: "Prenez une photo pour une analyse.", take_photo: "Prendre photo",
                 weather_agri_title: "🌱 Conseil Agricole (Météo)", crop_doctor_title: "🍃 Docteur des Plantes", crop_doctor_desc: "Écrivez le nom de la plante pour le traitement", search: "Chercher",
-                settings_title: "⚙️ Paramètres", about_title: "À propos", about_desc: "MeteoHrouz est votre compagnon météo et agricole.<br><br>- Version 3.0.",
+                settings_title: "⚙️ Paramètres", about_title: "À propos", about_desc: "MeteoHrouz est votre compagnon météo et agricole.<br><br>- Version 3.2.",
                 nav_home: "Accueil", nav_radar: "Radar", nav_agri: "Conseil", nav_settings: "Paramètres"
             },
             en: {
@@ -190,7 +184,7 @@
                 forecast7: "📅 7-Day Forecast", prayer_times: "🕌 Prayer Times", fajr: "Fajr", dhuhr: "Dhuhr", asr: "Asr", maghrib: "Maghrib", isha: "Isha", sunrise: "Sunrise",
                 radar_title: "🌧️ Rain Radar", ai_camera_title: "📸 Plant Scan (Beta)", ai_camera_desc: "Take a photo for analysis.", take_photo: "Take Photo",
                 weather_agri_title: "🌱 Agri Advice (Weather)", crop_doctor_title: "🍃 Plant Doctor", crop_doctor_desc: "Type plant name for disease & cure", search: "Search",
-                settings_title: "⚙️ Settings & Language", about_title: "About", about_desc: "MeteoHrouz is your daily weather and agri companion.<br><br>- Version 3.0.",
+                settings_title: "⚙️ Settings & Language", about_title: "About", about_desc: "MeteoHrouz is your daily weather and agri companion.<br><br>- Version 3.2.",
                 nav_home: "Home", nav_radar: "Radar", nav_agri: "Advice", nav_settings: "Settings"
             }
         };
@@ -244,14 +238,14 @@
                 document.getElementById('wind').innerText = current.wind_speed_10m + ' km/h';
                 document.getElementById('humidity').innerText = current.relative_humidity_2m + '%';
 
-                // تغيير الخلفية حسب الطقس
-                const body = document.body;
                 if (current.weather_code >= 50) {
-                    body.style.setProperty('--bg-gradient', 'linear-gradient(180deg, #2b2d42 0%, #1a1b26 100%)'); // خلفية رمادية للمطر
+                    document.body.style.background = 'linear-gradient(180deg, #4b5563 0%, #111827 100%)';
                 } else if (current.temperature_2m > 30) {
-                    body.style.setProperty('--bg-gradient', 'linear-gradient(180deg, #b92b27 0%, #1565C0 100%)'); // خلفية حارة
+                    document.body.style.background = 'linear-gradient(180deg, #991b1b 0%, #7f1d1d 100%)';
+                } else if (current.temperature_2m < 15) {
+                    document.body.style.background = 'linear-gradient(180deg, #1e3a8a 0%, #1e40af 100%)';
                 } else {
-                    body.style.setProperty('--bg-gradient', 'linear-gradient(180deg, #0d1b2a 0%, #1b263b 100%)'); // خلفية عادية
+                    document.body.style.background = 'linear-gradient(180deg, #0d1b2a 0%, #1b263b 100%)';
                 }
 
                 let advice = "";
@@ -305,7 +299,6 @@
                 });
         }
 
-        // --- الذكاء الاصطناعي التجريبي للكاميرا ---
         function processImage(event) {
             const file = event.target.files[0];
             if (file) {
@@ -320,7 +313,6 @@
                     resultDiv.style.color = '#e65100';
                     resultDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري تحليل الصورة بالذكاء الاصطناعي...';
                     
-                    // محاكاة التحليل (لأننا لا نملك API حقيقي مجاني)
                     setTimeout(() => {
                         resultDiv.innerHTML = `✅ <b>النتيجة (تجريبي):</b> تم اكتشاف بقع فطرية.<br>
                         <b>الإجراء المقترح:</b> استخدم مبيد فطري يحتوي على النحاس (Bouillie bordelaise).<br>
@@ -333,13 +325,26 @@
             }
         }
 
-        // --- قاعدة البيانات الطبية ---
+        // قاعدة البيانات الضخمة للمحاصيل
         const cropsDB = {
             "زيتون": `<b>المرض:</b> عين الطاووس<br><b>المبيد:</b> أوكسي كلورور النحاس<br><b>وقت الرش:</b> الخريف وأوائل الربيع.<br><span class="warning">⚠️ تجنب الرش قبل الأمطار.</span>`,
             "طماطم": `<b>المرض:</b> اللفحة المتأخرة<br><b>المبيد:</b> مانكوزيب (Mancozeb)<br><b>وقت الرش:</b> عند بداية الأعراض.<br>`,
             "عنب": `<b>المرض:</b> البياض الدقيقي<br><b>المبيد:</b> الكبريت الميكروني<br><b>وقت الرش:</b> قبل الإزهار.<br><span class="warning">⚠️ لا ترش الكبريت فوق 30 درجة.</span>`,
             "رمان": `<b>المرض:</b> لفحة الأزهار<br><b>المبيد:</b> كلوروثالونيل<br><b>وقت الرش:</b> فترة التزهير.<br>`,
-            "خوخ": `<b>المرض:</b> تجعد الأوراق<br><b>المبيد:</b> مركبات النحاس<br><b>وقت الرش:</b> أواخر الخريف.<br>`
+            "خوخ": `<b>المرض:</b> تجعد الأوراق<br><b>المبيد:</b> مركبات النحاس<br><b>وقت الرش:</b> أواخر الخريف.<br>`,
+            "بسباس": `<b>الأمراض:</b> البياض واللفحة.<br><b>المبيد:</b> مبيدات نحاسية وقائية.<br><b>وقت الرش:</b> في الجو الرطب وقبل الأمطار.<br>`,
+            "بقدونس": `<b>الأمراض:</b> تعفن الجذور والبياض.<br><b>المبيد:</b> تحسين التصريف + مبيد فطري خفيف.<br><b>وقت الرش:</b> عند ظهور بقع بيضاء.<br>`,
+            "جزر": `<b>الأمراض:</b> تعفن الجذور.<br><b>المبيد:</b> معالجة التربة وتجنب الري الزائد.<br><b>وقت الرش:</b> لا يحتاج رش أوراق غالباً، فقط معالجة التربة.<br>`,
+            "بطيخ": `<b>الأمراض:</b> البياض الدقيقي والذبول.<br><b>المبيد:</b> الكبريت الميكروني أو نحاس.<br><b>وقت الرش:</b> عند بداية نمو الأوراق.<br>`,
+            "خيار": `<b>الأمراض:</b> البياض الزغبي.<br><b>المبيد:</b> مانكوزيب (Mancozeb).<br><b>وقت الرش:</b> صباحاً وقبل الأمطار.<br><span class="warning">⚠️ تجنب الري العلوي.</span>`,
+            "بامية": `<b>الأمراض:</b> الذبول والبياض.<br><b>المبيد:</b> مبيدات فطرية جهازية.<br><b>وقت الرش:</b> عند بداية التزهير.<br>`,
+            "قرنبيط": `<b>الأمراض:</b> تعفن الرأس.<br><b>المبيد:</b> نحاس + تحسين التهوية.<br><b>وقت الرش:</b> قبل تكون الرأس.<br>`,
+            "بصل": `<b>الأمراض:</b> البياض الزغبي.<br><b>المبيد:</b> تجنب الري الزائد، ورش مبيدات فطرية.<br><b>وقت الرش:</b> في الجو الرطب.<br>`,
+            "تفاح": `<b>الأمراض:</b> الجرب والعفن.<br><b>المبيد:</b> مبيدات فطرية جهازية أو نحاس.<br><b>وقت الرش:</b> من انتفاخ البراعم حتى نهاية الإزهار.<br>`,
+            "ليمون": `<b>الأمراض:</b> التصمغ والأصداء.<br><b>المبيد:</b> أوكسي كلورور النحاس.<br><b>وقت الرش:</b> بعد القطف في الربيع.<br>`,
+            "فلفل": `<b>الأمراض:</b> الذبول والبياض.<br><b>المبيد:</b> مبيدات فطرية نحاسية.<br><b>وقت الرش:</b> عند بداية التزهير.<br>`,
+            "بطاطا": `<b>الأمراض:</b> اللفحة المتأخرة.<br><b>المبيد:</b> مانكوزيب أو نحاس.<br><b>وقت الرش:</b> في الجو الرطب وقبل الأمطار.<br>`,
+            "قمح": `<b>الأمراض:</b> الصدأ الأصفر.<br><b>المبيد:</b> مبيدات فطرية (Triazoles).<br><b>وقت الرش:</b> عند ظهور أول بقع صفراء.<br>`
         };
 
         function getTreatment() {
@@ -350,7 +355,7 @@
                 resultDiv.innerHTML = cropsDB[input];
                 resultDiv.style.display = 'block';
             } else if (input !== "") {
-                resultDiv.innerHTML = "❌ هذا المحصول غير مدرج حالياً.";
+                resultDiv.innerHTML = "❌ هذا المحصول غير مدرج حالياً. يرجى استشارة مهندس زراعي.";
                 resultDiv.style.display = 'block';
             } else {
                 resultDiv.style.display = 'none';
@@ -365,4 +370,4 @@
         } else { getWeather(); getPrayerTimes(); }
     </script>
 </body>
-                    </html>
+      </html>
