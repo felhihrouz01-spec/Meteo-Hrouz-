@@ -47,6 +47,7 @@
         .search-box { display: flex; gap: 5px; margin-top: 10px; }
         .search-box input { flex: 1; padding: 12px; border-radius: 8px; border: none; background: rgba(255,255,255,0.2); color: white; font-family: Tahoma; }
         .search-box button { padding: 0 20px; background: var(--primary); color: white; border: none; border-radius: 8px; font-weight: bold; }
+        
         .advice-box { background: rgba(76, 175, 80, 0.2); border-right: 4px solid var(--primary); padding: 12px; border-radius: 5px; text-align: right; margin-top: 10px; font-size: 14px; line-height: 1.8; }
         .advice-box b { color: #81c784; }
         .warning { color: #ffb74d; font-size: 12px; display: block; margin-top: 5px; }
@@ -149,7 +150,7 @@
             <h2 data-key="about_title">حول التطبيق</h2>
             <p style="line-height:1.6; font-size:14px; color:#a9b4c2;" data-key="about_desc">
                 تطبيق MeteoHrouz هو رفيقك اليومي للطقس والإرشاد الفلاحي.<br><br>
-                - الإصدار 3.2 (قاعدة بيانات ضخمة للمحاصيل).
+                - الإصدار 3.5 (GPS دقيق + معلومات النباتات).
             </p>
         </div>
     </div>
@@ -168,7 +169,7 @@
                 forecast7: "📅 توقعات 7 أيام", prayer_times: "🕌 مواقيت الصلاة", fajr: "الفجر", dhuhr: "الظهر", asr: "العصر", maghrib: "المغرب", isha: "العشاء", sunrise: "الشروق",
                 radar_title: "🌧️ رادار الأمطار", ai_camera_title: "📸 فحص النبتة بالكاميرا (تجريبي)", ai_camera_desc: "صور الورقة باش نعطوك تحليل مبدئي.", take_photo: "التقاط صورة",
                 weather_agri_title: "🌱 الإرشاد الفلاحي (الطقس)", crop_doctor_title: "🍃 طبيب النباتات الذكي", crop_doctor_desc: "اكتب اسم النبتة لمعرفة المرض والدواء", search: "بحث",
-                settings_title: "⚙️ الإعدادات واللغة", about_title: "حول التطبيق", about_desc: "تطبيق MeteoHrouz هو رفيقك اليومي للطقس والإرشاد الفلاحي.<br><br>- الإصدار 3.2.",
+                settings_title: "⚙️ الإعدادات واللغة", about_title: "حول التطبيق", about_desc: "تطبيق MeteoHrouz هو رفيقك اليومي للطقس والإرشاد الفلاحي.<br><br>- الإصدار 3.5.",
                 nav_home: "الرئيسية", nav_radar: "الرادار", nav_agri: "الإرشاد", nav_settings: "الإعدادات"
             },
             fr: {
@@ -176,7 +177,7 @@
                 forecast7: "📅 Prévisions 7 jours", prayer_times: "🕌 Heures de prière", fajr: "Fajr", dhuhr: "Dhuhr", asr: "Asr", maghrib: "Maghrib", isha: "Isha", sunrise: "Lever du soleil",
                 radar_title: "🌧️ Radar de pluie", ai_camera_title: "📸 Scan de plante (Beta)", ai_camera_desc: "Prenez une photo pour une analyse.", take_photo: "Prendre photo",
                 weather_agri_title: "🌱 Conseil Agricole (Météo)", crop_doctor_title: "🍃 Docteur des Plantes", crop_doctor_desc: "Écrivez le nom de la plante pour le traitement", search: "Chercher",
-                settings_title: "⚙️ Paramètres", about_title: "À propos", about_desc: "MeteoHrouz est votre compagnon météo et agricole.<br><br>- Version 3.2.",
+                settings_title: "⚙️ Paramètres", about_title: "À propos", about_desc: "MeteoHrouz est votre compagnon météo et agricole.<br><br>- Version 3.5.",
                 nav_home: "Accueil", nav_radar: "Radar", nav_agri: "Conseil", nav_settings: "Paramètres"
             },
             en: {
@@ -184,7 +185,7 @@
                 forecast7: "📅 7-Day Forecast", prayer_times: "🕌 Prayer Times", fajr: "Fajr", dhuhr: "Dhuhr", asr: "Asr", maghrib: "Maghrib", isha: "Isha", sunrise: "Sunrise",
                 radar_title: "🌧️ Rain Radar", ai_camera_title: "📸 Plant Scan (Beta)", ai_camera_desc: "Take a photo for analysis.", take_photo: "Take Photo",
                 weather_agri_title: "🌱 Agri Advice (Weather)", crop_doctor_title: "🍃 Plant Doctor", crop_doctor_desc: "Type plant name for disease & cure", search: "Search",
-                settings_title: "⚙️ Settings & Language", about_title: "About", about_desc: "MeteoHrouz is your daily weather and agri companion.<br><br>- Version 3.2.",
+                settings_title: "⚙️ Settings & Language", about_title: "About", about_desc: "MeteoHrouz is your daily weather and agri companion.<br><br>- Version 3.5.",
                 nav_home: "Home", nav_radar: "Radar", nav_agri: "Advice", nav_settings: "Settings"
             }
         };
@@ -213,7 +214,20 @@
 
         let lat = 35.15; 
         let lon = 9.85;
-        let cityName = "الرضاع الشرقية، تونس";
+        let cityName = "جاري تحديد الموقع...";
+
+        function updateLocationName(lat, lon) {
+            fetch(`https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${lat}&longitude=${lon}&localityLanguage=ar`)
+                .then(res => res.json())
+                .then(data => {
+                    let city = data.city || data.locality || data.principalSubdivision || "";
+                    let country = data.countryName || "";
+                    let fullName = city ? `${city}، ${country}` : "موقعك الحالي";
+                    document.getElementById('location-name').innerText = fullName;
+                }).catch(() => {
+                    document.getElementById('location-name').innerText = "موقعك الحالي";
+                });
+        }
 
         function getWeatherInfo(code) {
             if (code === 0) return { text: "صافي", icon: "☀️" };
@@ -227,7 +241,6 @@
         }
 
         function getWeather() {
-            document.getElementById('location-name').innerText = cityName;
             const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
             
             fetch(url).then(res => res.json()).then(data => {
@@ -311,40 +324,33 @@
                     resultDiv.style.display = 'block';
                     resultDiv.style.background = '#fff3e0';
                     resultDiv.style.color = '#e65100';
-                    resultDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري تحليل الصورة بالذكاء الاصطناعي...';
+                    resultDiv.innerHTML = '<i class="fas fa-spinner fa-spin"></i> جاري تحليل الصورة...';
                     
                     setTimeout(() => {
-                        resultDiv.innerHTML = `✅ <b>النتيجة (تجريبي):</b> تم اكتشاف بقع فطرية.<br>
-                        <b>الإجراء المقترح:</b> استخدم مبيد فطري يحتوي على النحاس (Bouillie bordelaise).<br>
-                        <span style="font-size:12px; color:#666;">(هذه نسخة تجريبية، يرجى استشارة مهندس زراعي).</span>`;
+                        resultDiv.innerHTML = `⚠️ <b>النتيجة (تجريبي):</b> الصورة غير واضحة أو الفحص غير متاح حالياً.<br>
+                        <b>الإجراء المقترح:</b> يرجى تصوير ورقة نبتة بوضوح، أو استشارة مهندس زراعي مباشرة.<br>
+                        <span style="font-size:12px; color:#666;">(الذكاء الاصطناعي الحقيقي يتطلب سيرفر مدفوع).</span>`;
                         resultDiv.style.background = '#e8f5e9';
                         resultDiv.style.color = '#2e7d32';
                     }, 3000);
                 }
                 reader.readAsDataURL(file);
+                event.target.value = ''; // تصفير الحقل باش يخدم مرة أخرى
             }
         }
 
-        // قاعدة البيانات الضخمة للمحاصيل
+        // قاعدة بيانات المحاصيل الشاملة (محدثة)
         const cropsDB = {
-            "زيتون": `<b>المرض:</b> عين الطاووس<br><b>المبيد:</b> أوكسي كلورور النحاس<br><b>وقت الرش:</b> الخريف وأوائل الربيع.<br><span class="warning">⚠️ تجنب الرش قبل الأمطار.</span>`,
-            "طماطم": `<b>المرض:</b> اللفحة المتأخرة<br><b>المبيد:</b> مانكوزيب (Mancozeb)<br><b>وقت الرش:</b> عند بداية الأعراض.<br>`,
-            "عنب": `<b>المرض:</b> البياض الدقيقي<br><b>المبيد:</b> الكبريت الميكروني<br><b>وقت الرش:</b> قبل الإزهار.<br><span class="warning">⚠️ لا ترش الكبريت فوق 30 درجة.</span>`,
-            "رمان": `<b>المرض:</b> لفحة الأزهار<br><b>المبيد:</b> كلوروثالونيل<br><b>وقت الرش:</b> فترة التزهير.<br>`,
-            "خوخ": `<b>المرض:</b> تجعد الأوراق<br><b>المبيد:</b> مركبات النحاس<br><b>وقت الرش:</b> أواخر الخريف.<br>`,
-            "بسباس": `<b>الأمراض:</b> البياض واللفحة.<br><b>المبيد:</b> مبيدات نحاسية وقائية.<br><b>وقت الرش:</b> في الجو الرطب وقبل الأمطار.<br>`,
-            "بقدونس": `<b>الأمراض:</b> تعفن الجذور والبياض.<br><b>المبيد:</b> تحسين التصريف + مبيد فطري خفيف.<br><b>وقت الرش:</b> عند ظهور بقع بيضاء.<br>`,
-            "جزر": `<b>الأمراض:</b> تعفن الجذور.<br><b>المبيد:</b> معالجة التربة وتجنب الري الزائد.<br><b>وقت الرش:</b> لا يحتاج رش أوراق غالباً، فقط معالجة التربة.<br>`,
-            "بطيخ": `<b>الأمراض:</b> البياض الدقيقي والذبول.<br><b>المبيد:</b> الكبريت الميكروني أو نحاس.<br><b>وقت الرش:</b> عند بداية نمو الأوراق.<br>`,
-            "خيار": `<b>الأمراض:</b> البياض الزغبي.<br><b>المبيد:</b> مانكوزيب (Mancozeb).<br><b>وقت الرش:</b> صباحاً وقبل الأمطار.<br><span class="warning">⚠️ تجنب الري العلوي.</span>`,
-            "بامية": `<b>الأمراض:</b> الذبول والبياض.<br><b>المبيد:</b> مبيدات فطرية جهازية.<br><b>وقت الرش:</b> عند بداية التزهير.<br>`,
-            "قرنبيط": `<b>الأمراض:</b> تعفن الرأس.<br><b>المبيد:</b> نحاس + تحسين التهوية.<br><b>وقت الرش:</b> قبل تكون الرأس.<br>`,
-            "بصل": `<b>الأمراض:</b> البياض الزغبي.<br><b>المبيد:</b> تجنب الري الزائد، ورش مبيدات فطرية.<br><b>وقت الرش:</b> في الجو الرطب.<br>`,
-            "تفاح": `<b>الأمراض:</b> الجرب والعفن.<br><b>المبيد:</b> مبيدات فطرية جهازية أو نحاس.<br><b>وقت الرش:</b> من انتفاخ البراعم حتى نهاية الإزهار.<br>`,
-            "ليمون": `<b>الأمراض:</b> التصمغ والأصداء.<br><b>المبيد:</b> أوكسي كلورور النحاس.<br><b>وقت الرش:</b> بعد القطف في الربيع.<br>`,
-            "فلفل": `<b>الأمراض:</b> الذبول والبياض.<br><b>المبيد:</b> مبيدات فطرية نحاسية.<br><b>وقت الرش:</b> عند بداية التزهير.<br>`,
-            "بطاطا": `<b>الأمراض:</b> اللفحة المتأخرة.<br><b>المبيد:</b> مانكوزيب أو نحاس.<br><b>وقت الرش:</b> في الجو الرطب وقبل الأمطار.<br>`,
-            "قمح": `<b>الأمراض:</b> الصدأ الأصفر.<br><b>المبيد:</b> مبيدات فطرية (Triazoles).<br><b>وقت الرش:</b> عند ظهور أول بقع صفراء.<br>`
+            "زيتون": `<b>النبتة:</b> زيتون<br><b>العمر:</b> يثمر بعد 4-5 سنوات.<br><b>الماء:</b> 100-200 لتر/أسبوع (صيفاً).<br><b>المرض:</b> عين الطاووس.<br><b>المبيد:</b> أوكسي كلورور النحاس.<br><b>وقت الرش:</b> الخريف وأوائل الربيع.<br><span class="warning">⚠️ تجنب الرش قبل الأمطار.</span>`,
+            "طماطم": `<b>النبتة:</b> طماطم<br><b>العمر:</b> موسمية (3-4 أشهر).<br><b>الماء:</b> 2-3 لتر/يوم (حسب الحرارة).<br><b>المرض:</b> اللفحة المتأخرة.<br><b>المبيد:</b> مانكوزيب (Mancozeb).<br><b>وقت الرش:</b> عند بداية الأعراض.<br>`,
+            "عنب": `<b>النبتة:</b> عنب<br><b>العمر:</b> يثمر بعد 3 سنوات.<br><b>الماء:</b> 50-100 لتر/أسبوع.<br><b>المرض:</b> البياض الدقيقي.<br><b>المبيد:</b> الكبريت الميكروني.<br><b>وقت الرش:</b> قبل الإزهار.<br><span class="warning">⚠️ لا ترش الكبريت فوق 30 درجة.</span>`,
+            "رمان": `<b>النبتة:</b> رمان<br><b>العمر:</b> يثمر بعد 3-4 سنوات.<br><b>الماء:</b> 80-150 لتر/أسبوع.<br><b>المرض:</b> لفحة الأزهار.<br><b>المبيد:</b> كلوروثالونيل.<br><b>وقت الرش:</b> فترة التزهير.<br>`,
+            "خوخ": `<b>النبتة:</b> خوخ<br><b>العمر:</b> يثمر بعد 2-3 سنوات.<br><b>الماء:</b> 100-150 لتر/أسبوع.<br><b>المرض:</b> تجعد الأوراق.<br><b>المبيد:</b> مركبات النحاس.<br><b>وقت الرش:</b> أواخر الخريف.<br>`,
+            "بسباس": `<b>النبتة:</b> بسباس<br><b>العمر:</b> حولي.<br><b>الماء:</b> ري معتدل (كل 2-3 أيام).<br><b>المرض:</b> البياض.<br><b>المبيد:</b> مبيدات نحاسية وقائية.<br><b>وقت الرش:</b> في الجو الرطب.<br>`,
+            "بقدونس": `<b>النبتة:</b> بقدونس<br><b>العمر:</b> حولي.<br><b>الماء:</b> ري خفيف ومنتظم.<br><b>المرض:</b> تعفن الجذور.<br><b>المبيد:</b> تحسين التصريف.<br><b>وقت الرش:</b> لا يحتاج رش غالباً.<br>`,
+            "بطيخ": `<b>النبتة:</b> بطيخ<br><b>العمر:</b> موسمي (80-100 يوم).<br><b>الماء:</b> يحتاج ري غزير ومنتظم.<br><b>المرض:</b> البياض الدقيقي.<br><b>المبيد:</b> الكبريت الميكروني.<br><b>وقت الرش:</b> عند بداية نمو الأوراق.<br>`,
+            "خيار": `<b>النبتة:</b> خيار<br><b>العمر:</b> موسمي (50-70 يوم).<br><b>الماء:</b> ري يومي (2-3 لتر).<br><b>المرض:</b> البياض الزغبي.<br><b>المبيد:</b> مانكوزيب (Mancozeb).<br><b>وقت الرش:</b> صباحاً وقبل الأمطار.<br><span class="warning">⚠️ تجنب الري العلوي.</span>`,
+            "جزر": `<b>النبتة:</b> جزر<br><b>العمر:</b> موسمي (70-80 يوم).<br><b>الماء:</b> ري منتظم (كل 3 أيام).<br><b>المرض:</b> تعفن الجذور.<br><b>المبيد:</b> معالجة التربة وتجنب الري الزائد.<br><b>وقت الرش:</b> لا يحتاج رش أوراق غالباً.<br>`
         };
 
         function getTreatment() {
@@ -364,10 +370,24 @@
 
         if (navigator.geolocation) {
             navigator.geolocation.getCurrentPosition(
-                (pos) => { lat = pos.coords.latitude; lon = pos.coords.longitude; cityName = "موقعك الحالي (GPS)"; getWeather(); getPrayerTimes(); },
-                (err) => { getWeather(); getPrayerTimes(); }
+                (pos) => { 
+                    lat = pos.coords.latitude; 
+                    lon = pos.coords.longitude; 
+                    updateLocationName(lat, lon); // جلب اسم المنطقة
+                    getWeather(); 
+                    getPrayerTimes(); 
+                },
+                (err) => { 
+                    document.getElementById('location-name').innerText = "الرضاع الشرقية، تونس";
+                    getWeather(); 
+                    getPrayerTimes(); 
+                }
             );
-        } else { getWeather(); getPrayerTimes(); }
+        } else { 
+            document.getElementById('location-name').innerText = "الرضاع الشرقية، تونس";
+            getWeather(); 
+            getPrayerTimes(); 
+        }
     </script>
 </body>
-      </html>
+                                                                            </html>
