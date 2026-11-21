@@ -91,7 +91,7 @@
 
         <div class="card">
             <h2 data-key="forecast7">📅 توقعات 7 أيام</h2>
-            <p style="font-size:11px; color:#a9b4c2; margin-top:-10px; margin-bottom:10px;">(اضغط على أي يوم للتفاصيل)</p>
+            <p style="font-size:11px; color:#a9b4c2; margin-top:-10px; margin-bottom:10px;" data-key="click_for_details">(اضغط على أي يوم للتفاصيل)</p>
             <div class="forecast-container" id="forecast-container"></div>
         </div>
 
@@ -118,7 +118,10 @@
     <div id="agri" class="tab-content">
         <div class="card">
             <h2 data-key="ai_camera_title">📸 فحص النبتة (مجاناً)</h2>
-            <p class="desc" data-key="ai_camera_desc" style="font-size:13px;">اضغط على الزر، وستفتح لك كاميرا Google الذكية لتصوير الورقة ومعرفة المرض فوراً.</p>
+            <!-- تعليمات استخدام جوجل لينس -->
+            <div style="text-align: right; font-size: 13px; line-height: 1.8; color: #a9b4c2; background: rgba(0,0,0,0.2); padding: 10px; border-radius: 8px; margin-bottom: 15px;">
+                <span data-key="lens_instructions"></span>
+            </div>
             <button class="camera-btn" onclick="window.open('https://lens.google.com/', '_blank')">
                 <i class="fab fa-google"></i> <span data-key="lens_btn">الفحص عبر Google Lens</span>
             </button>
@@ -157,7 +160,7 @@
             <h2 data-key="about_title">حول التطبيق</h2>
             <p style="line-height:1.6; font-size:14px; color:#a9b4c2;" data-key="about_desc">
                 تطبيق MeteoHrouz هو رفيقك اليومي للطقس والإرشاد الفلاحي.<br><br>
-                - الإصدار 5.1 (تفاصيل 7 أيام).
+                - الإصدار 6.0 (النسخة الدولية الشاملة).
             </p>
         </div>
     </div>
@@ -173,58 +176,65 @@
         const translations = {
             ar: {
                 loading_loc: "جاري تحديد الموقع...", loading: "جاري التحميل...", wind: "💨 الرياح", humidity: "💧 الرطوبة",
-                forecast7: "📅 توقعات 7 أيام", prayer_times: "🕌 مواقيت الصلاة", fajr: "الفجر", dhuhr: "الظهر", asr: "العصر", maghrib: "المغرب", isha: "العشاء", sunrise: "الشروق",
-                radar_title: "🌧️ رادار الأمطار", ai_camera_title: "📸 فحص النبتة (مجاناً)", ai_camera_desc: "اضغط على الزر، وستفتح لك كاميرا Google الذكية لتصوير الورقة ومعرفة المرض فوراً.", lens_btn: "الفحص عبر Google Lens",
-                weather_agri_title: "🌱 الإرشاد الفلاحي (الطقس)", crop_doctor_title: "🍃 طبيب النباتات الذكي", crop_doctor_desc: "اكتب اسم النبتة لمعرفة التفاصيل", search: "بحث",
-                settings_title: "⚙️ الإعدادات واللغة", about_title: "حول التطبيق", about_desc: "تطبيق MeteoHrouz هو رفيقك اليومي للطقس والإرشاد الفلاحي.<br><br>- الإصدار 5.1.",
+                forecast7: "📅 توقعات 7 أيام", click_for_details: "(اضغط على أي يوم للتفاصيل)", prayer_times: "🕌 مواقيت الصلاة", fajr: "الفجر", dhuhr: "الظهر", asr: "العصر", maghrib: "المغرب", isha: "العشاء", sunrise: "الشروق",
+                radar_title: "🌧️ رادار الأمطار", ai_camera_title: "📸 فحص النبتة (مجاناً)", 
+                lens_instructions: "<b>كيف تستعمل هذه الميزة؟</b><br>1️⃣ اضغط على الزر الأزرق في الأسفل.<br>2️⃣ ستفتح لك صفحة Google Lens.<br>3️⃣ اضغط على أيقونة الكاميرا 📷 في وسط الشاشة.<br>4️⃣ صور ورقة النبتة المصابة وستظهر النتيجة فوراً!", 
+                lens_btn: "الفحص عبر Google Lens", weather_agri_title: "🌱 الإرشاد الفلاحي (الطقس)", crop_doctor_title: "🍃 طبيب النباتات الذكي", crop_doctor_desc: "اكتب اسم النبتة لمعرفة التفاصيل", search: "بحث",
+                settings_title: "⚙️ الإعدادات واللغة", about_title: "حول التطبيق", about_desc: "تطبيق MeteoHrouz هو رفيقك اليومي للطقس والإرشاد الفلاحي.<br><br>- الإصدار 6.0.",
                 nav_home: "الرئيسية", nav_radar: "الرادار", nav_agri: "الإرشاد", nav_settings: "الإعدادات"
             },
             fr: {
                 loading_loc: "Localisation...", loading: "Chargement...", wind: "💨 Vent", humidity: "💧 Humidité",
-                forecast7: "📅 Prévisions 7 jours", prayer_times: "🕌 Heures de prière", fajr: "Fajr", dhuhr: "Dhuhr", asr: "Asr", maghrib: "Maghrib", isha: "Isha", sunrise: "Lever du soleil",
-                radar_title: "🌧️ Radar de pluie", ai_camera_title: "📸 Scan de plante (Gratuit)", ai_camera_desc: "Cliquez pour utiliser la caméra intelligente de Google.", lens_btn: "Scanner avec Google Lens",
-                weather_agri_title: "🌱 Conseil Agricole", crop_doctor_title: "🍃 Docteur des Plantes", crop_doctor_desc: "Écrivez le nom de la plante", search: "Chercher",
-                settings_title: "⚙️ Paramètres", about_title: "À propos", about_desc: "MeteoHrouz est votre compagnon météo et agricole.<br><br>- Version 5.1.",
+                forecast7: "📅 Prévisions 7 jours", click_for_details: "(Cliquez sur un jour pour les détails)", prayer_times: "🕌 Heures de prière", fajr: "Fajr", dhuhr: "Dhuhr", asr: "Asr", maghrib: "Maghrib", isha: "Isha", sunrise: "Lever du soleil",
+                radar_title: "🌧️ Radar de pluie", ai_camera_title: "📸 Scan de plante (Gratuit)", 
+                lens_instructions: "<b>Comment utiliser ?</b><br>1️⃣ Cliquez sur le bouton bleu.<br>2️⃣ La page Google Lens va s'ouvrir.<br>3️⃣ Cliquez sur l'icône caméra 📷.<br>4️⃣ Prenez une photo de la feuille.", 
+                lens_btn: "Scanner avec Google Lens", weather_agri_title: "🌱 Conseil Agricole", crop_doctor_title: "🍃 Docteur des Plantes", crop_doctor_desc: "Écrivez le nom de la plante", search: "Chercher",
+                settings_title: "⚙️ Paramètres", about_title: "À propos", about_desc: "MeteoHrouz est votre compagnon météo et agricole.<br><br>- Version 6.0.",
                 nav_home: "Accueil", nav_radar: "Radar", nav_agri: "Conseil", nav_settings: "Paramètres"
             },
             en: {
                 loading_loc: "Locating...", loading: "Loading...", wind: "💨 Wind", humidity: "💧 Humidity",
-                forecast7: "📅 7-Day Forecast", prayer_times: "🕌 Prayer Times", fajr: "Fajr", dhuhr: "Dhuhr", asr: "Asr", maghrib: "Maghrib", isha: "Isha", sunrise: "Sunrise",
-                radar_title: "🌧️ Rain Radar", ai_camera_title: "📸 Plant Scan (Free)", ai_camera_desc: "Click to use Google's smart camera.", lens_btn: "Scan with Google Lens",
-                weather_agri_title: "🌱 Agri Advice", crop_doctor_title: "🍃 Plant Doctor", crop_doctor_desc: "Type plant name", search: "Search",
-                settings_title: "⚙️ Settings", about_title: "About", about_desc: "MeteoHrouz is your daily weather and agri companion.<br><br>- Version 5.1.",
+                forecast7: "📅 7-Day Forecast", click_for_details: "(Click any day for details)", prayer_times: "🕌 Prayer Times", fajr: "Fajr", dhuhr: "Dhuhr", asr: "Asr", maghrib: "Maghrib", isha: "Isha", sunrise: "Sunrise",
+                radar_title: "🌧️ Rain Radar", ai_camera_title: "📸 Plant Scan (Free)", 
+                lens_instructions: "<b>How to use?</b><br>1️⃣ Click the blue button.<br>2️⃣ Google Lens page will open.<br>3️⃣ Click the camera icon 📷.<br>4️⃣ Take a photo of the leaf.", 
+                lens_btn: "Scan with Google Lens", weather_agri_title: "🌱 Agri Advice", crop_doctor_title: "🍃 Plant Doctor", crop_doctor_desc: "Type plant name", search: "Search",
+                settings_title: "⚙️ Settings", about_title: "About", about_desc: "MeteoHrouz is your daily weather and agri companion.<br><br>- Version 6.0.",
                 nav_home: "Home", nav_radar: "Radar", nav_agri: "Advice", nav_settings: "Settings"
             },
             it: {
                 loading_loc: "Localizzazione...", loading: "Caricamento...", wind: "💨 Vento", humidity: "💧 Umidità",
-                forecast7: "📅 Previsioni 7 giorni", prayer_times: "🕌 Orari preghiera", fajr: "Fajr", dhuhr: "Dhuhr", asr: "Asr", maghrib: "Maghrib", isha: "Isha", sunrise: "Alba",
-                radar_title: "🌧️ Radar pioggia", ai_camera_title: "📸 Scansione pianta (Gratis)", ai_camera_desc: "Clicca per usare la fotocamera di Google.", lens_btn: "Scansiona con Google Lens",
-                weather_agri_title: "🌱 Consiglio Agricolo", crop_doctor_title: "🍃 Dottore delle Piante", crop_doctor_desc: "Scrivi il nome della pianta", search: "Cerca",
-                settings_title: "⚙️ Impostazioni", about_title: "Informazioni", about_desc: "MeteoHrouz è il tuo compagno meteo e agricolo.<br><br>- Versione 5.1.",
+                forecast7: "📅 Previsioni 7 giorni", click_for_details: "(Clicca per dettagli)", prayer_times: "🕌 Orari preghiera", fajr: "Fajr", dhuhr: "Dhuhr", asr: "Asr", maghrib: "Maghrib", isha: "Isha", sunrise: "Alba",
+                radar_title: "🌧️ Radar pioggia", ai_camera_title: "📸 Scansione pianta (Gratis)", 
+                lens_instructions: "<b>Come usare?</b><br>1️⃣ Clicca il pulsante blu.<br>2️⃣ Si apre Google Lens.<br>3️⃣ Clicca l'icona fotocamera 📷.<br>4️⃣ Scatta una foto.", 
+                lens_btn: "Scansiona con Google Lens", weather_agri_title: "🌱 Consiglio Agricolo", crop_doctor_title: "🍃 Dottore delle Piante", crop_doctor_desc: "Scrivi il nome", search: "Cerca",
+                settings_title: "⚙️ Impostazioni", about_title: "Informazioni", about_desc: "MeteoHrouz è il tuo compagno.<br><br>- Versione 6.0.",
                 nav_home: "Home", nav_radar: "Radar", nav_agri: "Consiglio", nav_settings: "Impostazioni"
             },
             es: {
                 loading_loc: "Localizando...", loading: "Cargando...", wind: "💨 Viento", humidity: "💧 Humedad",
-                forecast7: "📅 Pronóstico 7 días", prayer_times: "🕌 Horarios de oración", fajr: "Fajr", dhuhr: "Dhuhr", asr: "Asr", maghrib: "Maghrib", isha: "Isha", sunrise: "Amanecer",
-                radar_title: "🌧️ Radar de lluvia", ai_camera_title: "📸 Escaneo de plantas (Gratis)", ai_camera_desc: "Haz clic para usar la cámara de Google.", lens_btn: "Escanear con Google Lens",
-                weather_agri_title: "🌱 Consejo Agrícola", crop_doctor_title: "🍃 Doctor de Plantas", crop_doctor_desc: "Escribe el nombre de la planta", search: "Buscar",
-                settings_title: "⚙️ Ajustes", about_title: "Acerca de", about_desc: "MeteoHrouz es tu compañero meteorológico y agrícola.<br><br>- Versión 5.1.",
+                forecast7: "📅 Pronóstico 7 días", click_for_details: "(Clic para detalles)", prayer_times: "🕌 Horarios de oración", fajr: "Fajr", dhuhr: "Dhuhr", asr: "Asr", maghrib: "Maghrib", isha: "Isha", sunrise: "Amanecer",
+                radar_title: "🌧️ Radar de lluvia", ai_camera_title: "📸 Escaneo (Gratis)", 
+                lens_instructions: "<b>¿Cómo usar?</b><br>1️⃣ Haz clic en el botón azul.<br>2️⃣ Se abrirá Google Lens.<br>3️⃣ Haz clic en el icono de cámara 📷.<br>4️⃣ Toma una foto.", 
+                lens_btn: "Escanear con Google Lens", weather_agri_title: "🌱 Consejo Agrícola", crop_doctor_title: "🍃 Doctor de Plantas", crop_doctor_desc: "Escribe el nombre", search: "Buscar",
+                settings_title: "⚙️ Ajustes", about_title: "Acerca de", about_desc: "MeteoHrouz es tu compañero.<br><br>- Versión 6.0.",
                 nav_home: "Inicio", nav_radar: "Radar", nav_agri: "Consejo", nav_settings: "Ajustes"
             },
             de: {
                 loading_loc: "Ortung...", loading: "Laden...", wind: "💨 Wind", humidity: "💧 Feuchtigkeit",
-                forecast7: "📅 7-Tage-Vorhersage", prayer_times: "🕌 Gebetszeiten", fajr: "Fajr", dhuhr: "Dhuhr", asr: "Asr", maghrib: "Maghrib", isha: "Isha", sunrise: "Sonnenaufgang",
-                radar_title: "🌧️ Regenradar", ai_camera_title: "📸 Pflanzenscan (Kostenlos)", ai_camera_desc: "Klicken Sie, um die Google-Kamera zu nutzen.", lens_btn: "Mit Google Lens scannen",
-                weather_agri_title: "🌱 Agrarberatung", crop_doctor_title: "🍃 Pflanzendoktor", crop_doctor_desc: "Pflanzennamen eingeben", search: "Suchen",
-                settings_title: "⚙️ Einstellungen", about_title: "Über", about_desc: "MeteoHrouz ist Ihr täglicher Wetter- und Agrarberater.<br><br>- Version 5.1.",
+                forecast7: "📅 7-Tage-Vorhersage", click_for_details: "(Klicken für Details)", prayer_times: "🕌 Gebetszeiten", fajr: "Fajr", dhuhr: "Dhuhr", asr: "Asr", maghrib: "Maghrib", isha: "Isha", sunrise: "Sonnenaufgang",
+                radar_title: "🌧️ Regenradar", ai_camera_title: "📸 Pflanzenscan (Kostenlos)", 
+                lens_instructions: "<b>Wie benutzt man es?</b><br>1️⃣ Klicken Sie auf die blaue Taste.<br>2️⃣ Google Lens wird geöffnet.<br>3️⃣ Klicken Sie auf das Kamerasymbol 📷.<br>4️⃣ Machen Sie ein Foto.", 
+                lens_btn: "Mit Google Lens scannen", weather_agri_title: "🌱 Agrarberatung", crop_doctor_title: "🍃 Pflanzendoktor", crop_doctor_desc: "Pflanzennamen eingeben", search: "Suchen",
+                settings_title: "⚙️ Einstellungen", about_title: "Über", about_desc: "MeteoHrouz ist Ihr Berater.<br><br>- Version 6.0.",
                 nav_home: "Startseite", nav_radar: "Radar", nav_agri: "Beratung", nav_settings: "Einstellungen"
             },
             tr: {
                 loading_loc: "Konum belirleniyor...", loading: "Yükleniyor...", wind: "💨 Rüzgar", humidity: "💧 Nem",
-                forecast7: "📅 7 Günlük Tahmin", prayer_times: "🕌 Namaz Vakitleri", fajr: "İmsak", dhuhr: "Öğle", asr: "İkindi", maghrib: "Akşam", isha: "Yatsı", sunrise: "Güneş Doğuşu",
-                radar_title: "🌧️ Yağmur Radarı", ai_camera_title: "📸 Bitki Taraması (Ücretsiz)", ai_camera_desc: "Google kamerasını kullanmak için tıklayın.", lens_btn: "Google Lens ile Tara",
-                weather_agri_title: "🌱 Tarım Danışmanlığı", crop_doctor_title: "🍃 Bitki Doktoru", crop_doctor_desc: "Bitki adını yazın", search: "Ara",
-                settings_title: "⚙️ Ayarlar", about_title: "Hakkında", about_desc: "MeteoHrouz günlük hava ve tarım yol arkadaşınızdır.<br><br>- Sürüm 5.1.",
+                forecast7: "📅 7 Günlük Tahmin", click_for_details: "(Detaylar için tıklayın)", prayer_times: "🕌 Namaz Vakitleri", fajr: "İmsak", dhuhr: "Öğle", asr: "İkindi", maghrib: "Akşam", isha: "Yatsı", sunrise: "Güneş Doğuşu",
+                radar_title: "🌧️ Yağmur Radarı", ai_camera_title: "📸 Bitki Taraması (Ücretsiz)", 
+                lens_instructions: "<b>Nasıl kullanılır?</b><br>1️⃣ Mavi butona tıklayın.<br>2️⃣ Google Lens açılacaktır.<br>3️⃣ Kamera simgesine 📷 tıklayın.<br>4️⃣ Yaprağın fotoğrafını çekin.", 
+                lens_btn: "Google Lens ile Tara", weather_agri_title: "🌱 Tarım Danışmanlığı", crop_doctor_title: "🍃 Bitki Doktoru", crop_doctor_desc: "Bitki adını yazın", search: "Ara",
+                settings_title: "⚙️ Ayarlar", about_title: "Hakkında", about_desc: "MeteoHrouz sizin yol arkadaşınızdır.<br><br>- Sürüm 6.0.",
                 nav_home: "Ana Sayfa", nav_radar: "Radar", nav_agri: "Danışmanlık", nav_settings: "Ayarlar"
             }
         };
@@ -242,6 +252,12 @@
                     el.innerHTML = translations[lang][key];
                 }
             });
+            // تحديث اسم المنطقة عند تغيير اللغة
+            if(navigator.geolocation) {
+                 navigator.geolocation.getCurrentPosition((pos) => {
+                     updateLocationName(pos.coords.latitude, pos.coords.longitude);
+                 });
+            }
         }
 
         function switchTab(tabId, element) {
@@ -279,7 +295,6 @@
         }
 
         function getWeather() {
-            // زدنا wind_speed_10m_max و relative_humidity_2m_mean للطلب باش نعرفوا تفاصيل الأيام الجاية
             const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,relative_humidity_2m_mean&timezone=auto`;
             
             fetch(url).then(res => res.json()).then(data => {
@@ -348,9 +363,8 @@
                         <div class="rain">💧 ${rainProb}%</div>
                     `;
                     
-                    // إضافة التفاصيل عند الضغط
                     div.onclick = () => {
-                        alert(`📅 تفاصيل يوم ${dayName}:\n\n🌡️ الحرارة: ${minTemp}° إلى ${maxTemp}°\n🌧️ احتمال الأمطار: ${rainProb}%\n💨 سرعة الرياح: ${maxWind} km/h\n💧 الرطوبة: ${avgHum}%\n\nالحالة: ${dInfo.text}`);
+                        alert(`📅 ${dayName}:\n\n🌡️ الحرارة: ${minTemp}° / ${maxTemp}°\n🌧️ الأمطار: ${rainProb}%\n💨 الرياح: ${maxWind} km/h\n💧 الرطوبة: ${avgHum}%\n\n${dInfo.text}`);
                     };
                     
                     forecastContainer.appendChild(div);
@@ -375,7 +389,9 @@
             "زيتون": `<b>النبتة:</b> زيتون<br><b>العمر:</b> يثمر بعد 4-5 سنوات.<br><b>الماء:</b> 100-200 لتر/أسبوع.<br><b>المرض:</b> عين الطاووس.<br><b>المبيد:</b> أوكسي كلورور النحاس.<br><b>وقت الرش:</b> الخريف والربيع.<br>`,
             "طماطم": `<b>النبتة:</b> طماطم<br><b>العمر:</b> موسمية.<br><b>الماء:</b> 2-3 لتر/يوم.<br><b>المرض:</b> اللفحة المتأخرة.<br><b>المبيد:</b> مانكوزيب.<br><b>وقت الرش:</b> عند الأعراض.<br>`,
             "بطيخ": `<b>النبتة:</b> بطيخ<br><b>العمر:</b> 80-100 يوم.<br><b>الماء:</b> ري غزير.<br><b>المرض:</b> البياض الدقيقي.<br><b>المبيد:</b> الكبريت الميكروني.<br><b>وقت الرش:</b> بداية النمو.<br>`,
-            "بسباس": `<b>النبتة:</b> بسباس<br><b>العمر:</b> حولي.<br><b>الماء:</b> ري معتدل.<br><b>المرض:</b> البياض.<br><b>المبيد:</b> نحاسي.<br><b>وقت الرش:</b> الجو الرطب.<br>`
+            "بسباس": `<b>النبتة:</b> بسباس<br><b>العمر:</b> حولي.<br><b>الماء:</b> ري معتدل.<br><b>المرض:</b> البياض.<br><b>المبيد:</b> نحاسي.<br><b>وقت الرش:</b> الجو الرطب.<br>`,
+            "بقدونس": `<b>النبتة:</b> بقدونس<br><b>العمر:</b> حولي.<br><b>الماء:</b> ري خفيف.<br><b>المرض:</b> تعفن الجذور.<br><b>المبيد:</b> تحسين التصريف.<br><b>وقت الرش:</b> لا يحتاج.<br>`,
+            "جزر": `<b>النبتة:</b> جزر<br><b>العمر:</b> 70-80 يوم.<br><b>الماء:</b> ري منتظم.<br><b>المرض:</b> تعفن الجذور.<br><b>المبيد:</b> تجنب الري الزائد.<br><b>وقت الرش:</b> لا يحتاج.<br>`
         };
 
         function getTreatment() {
@@ -415,4 +431,4 @@
         }
     </script>
 </body>
-                                                                                                        </html>
+            </html>
