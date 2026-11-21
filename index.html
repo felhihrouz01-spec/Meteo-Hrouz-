@@ -15,9 +15,7 @@
             font-family: Tahoma, sans-serif; 
             background: linear-gradient(180deg, #0d1b2a 0%, #1b263b 100%);
             color: var(--text-light);
-            margin: 0; padding: 0; 
-            padding-bottom: 250px;
-            height: 100vh; overflow-y: auto;
+            margin: 0; padding: 0; padding-bottom: 250px; height: 100vh; overflow-y: auto;
             transition: background 1s ease-in-out;
         }
         
@@ -30,14 +28,8 @@
         .temp { font-size: 55px; font-weight: bold; margin: 5px 0; }
         
         .location-badge {
-            background: rgba(76, 175, 80, 0.3);
-            border: 1px solid var(--primary);
-            color: #fff;
-            padding: 5px 15px;
-            border-radius: 20px;
-            font-size: 14px;
-            display: inline-block;
-            margin: 5px auto 15px auto;
+            background: rgba(76, 175, 80, 0.3); border: 1px solid var(--primary); color: #fff;
+            padding: 5px 15px; border-radius: 20px; font-size: 14px; display: inline-block; margin: 5px auto 15px auto;
         }
 
         .desc { font-size: 18px; color: #a9b4c2; }
@@ -48,7 +40,8 @@
 
         .forecast-container { display: flex; overflow-x: auto; gap: 10px; padding-bottom: 10px; }
         .forecast-container::-webkit-scrollbar { display: none; }
-        .forecast-day { min-width: 85px; background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; }
+        .forecast-day { min-width: 85px; background: rgba(255, 255, 255, 0.05); padding: 10px; border-radius: 10px; text-align: center; border: 1px solid rgba(255,255,255,0.1); cursor: pointer; transition: 0.2s;}
+        .forecast-day:active { background: rgba(255, 255, 255, 0.2); }
         .forecast-day .day-name { font-size: 13px; color: #a9b4c2; margin-bottom: 5px; }
         .forecast-day .icon { font-size: 24px; margin: 5px 0; }
         .forecast-day .temps { font-size: 14px; font-weight: bold; }
@@ -98,6 +91,7 @@
 
         <div class="card">
             <h2 data-key="forecast7">📅 توقعات 7 أيام</h2>
+            <p style="font-size:11px; color:#a9b4c2; margin-top:-10px; margin-bottom:10px;">(اضغط على أي يوم للتفاصيل)</p>
             <div class="forecast-container" id="forecast-container"></div>
         </div>
 
@@ -163,7 +157,7 @@
             <h2 data-key="about_title">حول التطبيق</h2>
             <p style="line-height:1.6; font-size:14px; color:#a9b4c2;" data-key="about_desc">
                 تطبيق MeteoHrouz هو رفيقك اليومي للطقس والإرشاد الفلاحي.<br><br>
-                - الإصدار 5.0 (دولي ومتعدد اللغات).
+                - الإصدار 5.1 (تفاصيل 7 أيام).
             </p>
         </div>
     </div>
@@ -182,15 +176,15 @@
                 forecast7: "📅 توقعات 7 أيام", prayer_times: "🕌 مواقيت الصلاة", fajr: "الفجر", dhuhr: "الظهر", asr: "العصر", maghrib: "المغرب", isha: "العشاء", sunrise: "الشروق",
                 radar_title: "🌧️ رادار الأمطار", ai_camera_title: "📸 فحص النبتة (مجاناً)", ai_camera_desc: "اضغط على الزر، وستفتح لك كاميرا Google الذكية لتصوير الورقة ومعرفة المرض فوراً.", lens_btn: "الفحص عبر Google Lens",
                 weather_agri_title: "🌱 الإرشاد الفلاحي (الطقس)", crop_doctor_title: "🍃 طبيب النباتات الذكي", crop_doctor_desc: "اكتب اسم النبتة لمعرفة التفاصيل", search: "بحث",
-                settings_title: "⚙️ الإعدادات واللغة", about_title: "حول التطبيق", about_desc: "تطبيق MeteoHrouz هو رفيقك اليومي للطقس والإرشاد الفلاحي.<br><br>- الإصدار 5.0.",
+                settings_title: "⚙️ الإعدادات واللغة", about_title: "حول التطبيق", about_desc: "تطبيق MeteoHrouz هو رفيقك اليومي للطقس والإرشاد الفلاحي.<br><br>- الإصدار 5.1.",
                 nav_home: "الرئيسية", nav_radar: "الرادار", nav_agri: "الإرشاد", nav_settings: "الإعدادات"
             },
             fr: {
-                loading_loc: "Localisation en cours...", loading: "Chargement...", wind: "💨 Vent", humidity: "💧 Humidité",
+                loading_loc: "Localisation...", loading: "Chargement...", wind: "💨 Vent", humidity: "💧 Humidité",
                 forecast7: "📅 Prévisions 7 jours", prayer_times: "🕌 Heures de prière", fajr: "Fajr", dhuhr: "Dhuhr", asr: "Asr", maghrib: "Maghrib", isha: "Isha", sunrise: "Lever du soleil",
                 radar_title: "🌧️ Radar de pluie", ai_camera_title: "📸 Scan de plante (Gratuit)", ai_camera_desc: "Cliquez pour utiliser la caméra intelligente de Google.", lens_btn: "Scanner avec Google Lens",
                 weather_agri_title: "🌱 Conseil Agricole", crop_doctor_title: "🍃 Docteur des Plantes", crop_doctor_desc: "Écrivez le nom de la plante", search: "Chercher",
-                settings_title: "⚙️ Paramètres", about_title: "À propos", about_desc: "MeteoHrouz est votre compagnon météo et agricole.<br><br>- Version 5.0.",
+                settings_title: "⚙️ Paramètres", about_title: "À propos", about_desc: "MeteoHrouz est votre compagnon météo et agricole.<br><br>- Version 5.1.",
                 nav_home: "Accueil", nav_radar: "Radar", nav_agri: "Conseil", nav_settings: "Paramètres"
             },
             en: {
@@ -198,7 +192,7 @@
                 forecast7: "📅 7-Day Forecast", prayer_times: "🕌 Prayer Times", fajr: "Fajr", dhuhr: "Dhuhr", asr: "Asr", maghrib: "Maghrib", isha: "Isha", sunrise: "Sunrise",
                 radar_title: "🌧️ Rain Radar", ai_camera_title: "📸 Plant Scan (Free)", ai_camera_desc: "Click to use Google's smart camera.", lens_btn: "Scan with Google Lens",
                 weather_agri_title: "🌱 Agri Advice", crop_doctor_title: "🍃 Plant Doctor", crop_doctor_desc: "Type plant name", search: "Search",
-                settings_title: "⚙️ Settings", about_title: "About", about_desc: "MeteoHrouz is your daily weather and agri companion.<br><br>- Version 5.0.",
+                settings_title: "⚙️ Settings", about_title: "About", about_desc: "MeteoHrouz is your daily weather and agri companion.<br><br>- Version 5.1.",
                 nav_home: "Home", nav_radar: "Radar", nav_agri: "Advice", nav_settings: "Settings"
             },
             it: {
@@ -206,7 +200,7 @@
                 forecast7: "📅 Previsioni 7 giorni", prayer_times: "🕌 Orari preghiera", fajr: "Fajr", dhuhr: "Dhuhr", asr: "Asr", maghrib: "Maghrib", isha: "Isha", sunrise: "Alba",
                 radar_title: "🌧️ Radar pioggia", ai_camera_title: "📸 Scansione pianta (Gratis)", ai_camera_desc: "Clicca per usare la fotocamera di Google.", lens_btn: "Scansiona con Google Lens",
                 weather_agri_title: "🌱 Consiglio Agricolo", crop_doctor_title: "🍃 Dottore delle Piante", crop_doctor_desc: "Scrivi il nome della pianta", search: "Cerca",
-                settings_title: "⚙️ Impostazioni", about_title: "Informazioni", about_desc: "MeteoHrouz è il tuo compagno meteo e agricolo.<br><br>- Versione 5.0.",
+                settings_title: "⚙️ Impostazioni", about_title: "Informazioni", about_desc: "MeteoHrouz è il tuo compagno meteo e agricolo.<br><br>- Versione 5.1.",
                 nav_home: "Home", nav_radar: "Radar", nav_agri: "Consiglio", nav_settings: "Impostazioni"
             },
             es: {
@@ -214,7 +208,7 @@
                 forecast7: "📅 Pronóstico 7 días", prayer_times: "🕌 Horarios de oración", fajr: "Fajr", dhuhr: "Dhuhr", asr: "Asr", maghrib: "Maghrib", isha: "Isha", sunrise: "Amanecer",
                 radar_title: "🌧️ Radar de lluvia", ai_camera_title: "📸 Escaneo de plantas (Gratis)", ai_camera_desc: "Haz clic para usar la cámara de Google.", lens_btn: "Escanear con Google Lens",
                 weather_agri_title: "🌱 Consejo Agrícola", crop_doctor_title: "🍃 Doctor de Plantas", crop_doctor_desc: "Escribe el nombre de la planta", search: "Buscar",
-                settings_title: "⚙️ Ajustes", about_title: "Acerca de", about_desc: "MeteoHrouz es tu compañero meteorológico y agrícola.<br><br>- Versión 5.0.",
+                settings_title: "⚙️ Ajustes", about_title: "Acerca de", about_desc: "MeteoHrouz es tu compañero meteorológico y agrícola.<br><br>- Versión 5.1.",
                 nav_home: "Inicio", nav_radar: "Radar", nav_agri: "Consejo", nav_settings: "Ajustes"
             },
             de: {
@@ -222,7 +216,7 @@
                 forecast7: "📅 7-Tage-Vorhersage", prayer_times: "🕌 Gebetszeiten", fajr: "Fajr", dhuhr: "Dhuhr", asr: "Asr", maghrib: "Maghrib", isha: "Isha", sunrise: "Sonnenaufgang",
                 radar_title: "🌧️ Regenradar", ai_camera_title: "📸 Pflanzenscan (Kostenlos)", ai_camera_desc: "Klicken Sie, um die Google-Kamera zu nutzen.", lens_btn: "Mit Google Lens scannen",
                 weather_agri_title: "🌱 Agrarberatung", crop_doctor_title: "🍃 Pflanzendoktor", crop_doctor_desc: "Pflanzennamen eingeben", search: "Suchen",
-                settings_title: "⚙️ Einstellungen", about_title: "Über", about_desc: "MeteoHrouz ist Ihr täglicher Wetter- und Agrarberater.<br><br>- Version 5.0.",
+                settings_title: "⚙️ Einstellungen", about_title: "Über", about_desc: "MeteoHrouz ist Ihr täglicher Wetter- und Agrarberater.<br><br>- Version 5.1.",
                 nav_home: "Startseite", nav_radar: "Radar", nav_agri: "Beratung", nav_settings: "Einstellungen"
             },
             tr: {
@@ -230,7 +224,7 @@
                 forecast7: "📅 7 Günlük Tahmin", prayer_times: "🕌 Namaz Vakitleri", fajr: "İmsak", dhuhr: "Öğle", asr: "İkindi", maghrib: "Akşam", isha: "Yatsı", sunrise: "Güneş Doğuşu",
                 radar_title: "🌧️ Yağmur Radarı", ai_camera_title: "📸 Bitki Taraması (Ücretsiz)", ai_camera_desc: "Google kamerasını kullanmak için tıklayın.", lens_btn: "Google Lens ile Tara",
                 weather_agri_title: "🌱 Tarım Danışmanlığı", crop_doctor_title: "🍃 Bitki Doktoru", crop_doctor_desc: "Bitki adını yazın", search: "Ara",
-                settings_title: "⚙️ Ayarlar", about_title: "Hakkında", about_desc: "MeteoHrouz günlük hava ve tarım yol arkadaşınızdır.<br><br>- Sürüm 5.0.",
+                settings_title: "⚙️ Ayarlar", about_title: "Hakkında", about_desc: "MeteoHrouz günlük hava ve tarım yol arkadaşınızdır.<br><br>- Sürüm 5.1.",
                 nav_home: "Ana Sayfa", nav_radar: "Radar", nav_agri: "Danışmanlık", nav_settings: "Ayarlar"
             }
         };
@@ -285,7 +279,8 @@
         }
 
         function getWeather() {
-            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto`;
+            // زدنا wind_speed_10m_max و relative_humidity_2m_mean للطلب باش نعرفوا تفاصيل الأيام الجاية
+            const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_probability_max,wind_speed_10m_max,relative_humidity_2m_mean&timezone=auto`;
             
             fetch(url).then(res => res.json()).then(data => {
                 const current = data.current;
@@ -338,14 +333,26 @@
                     let dayName = currentDays[date.getDay()];
                     
                     let dInfo = getWeatherInfo(daily.weather_code[i]);
+                    let maxTemp = Math.round(daily.temperature_2m_max[i]);
+                    let minTemp = Math.round(daily.temperature_2m_min[i]);
+                    let rainProb = daily.precipitation_probability_max[i];
+                    let maxWind = Math.round(daily.wind_speed_10m_max[i]);
+                    let avgHum = Math.round(daily.relative_humidity_2m_mean[i]);
+
                     let div = document.createElement('div');
                     div.className = 'forecast-day';
                     div.innerHTML = `
                         <div class="day-name">${dayName}</div>
                         <div class="icon">${dInfo.icon}</div>
-                        <div class="temps">${Math.round(daily.temperature_2m_max[i])}° / ${Math.round(daily.temperature_2m_min[i])}°</div>
-                        <div class="rain">💧 ${daily.precipitation_probability_max[i]}%</div>
+                        <div class="temps">${maxTemp}° / ${minTemp}°</div>
+                        <div class="rain">💧 ${rainProb}%</div>
                     `;
+                    
+                    // إضافة التفاصيل عند الضغط
+                    div.onclick = () => {
+                        alert(`📅 تفاصيل يوم ${dayName}:\n\n🌡️ الحرارة: ${minTemp}° إلى ${maxTemp}°\n🌧️ احتمال الأمطار: ${rainProb}%\n💨 سرعة الرياح: ${maxWind} km/h\n💧 الرطوبة: ${avgHum}%\n\nالحالة: ${dInfo.text}`);
+                    };
+                    
                     forecastContainer.appendChild(div);
                 }
             });
@@ -408,4 +415,4 @@
         }
     </script>
 </body>
-    </html>
+                                                                                                        </html>
